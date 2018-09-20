@@ -1,0 +1,4458 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+
+	
+	
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="author" content="XiunoBBS 4.0" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="[讨论]RC4算法暴力破解的尝试(附源码)" />
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+
+	<title>
+		[讨论]RC4算法暴力破解的尝试(附源码)-『密码算法』-看雪安全论坛	</title>
+
+	<link rel="shortcut icon" href="view/img/favicon.ico" />
+	<link rel="icon" sizes="32x32" href="view/img/favicon.ico">
+	<link rel="Bookmark" href="view/img/favicon.ico" />
+	<link rel="stylesheet" href="view/css/bootstrap.css?1.5">
+
+	<link rel="stylesheet" href="view/css/bootstrap-bbs.css?1.5">
+	<link rel="stylesheet" href="view/css/bootstrap-icon.css?1.5">
+	<link rel="stylesheet" href="plugin/kanxue/css/kanxue.css?1.5">
+	<style>
+		#search_form {
+			width: 250px;
+			display: inline-block;
+			position: relative;
+			padding: 0px;
+		}
+		
+		#search_form>input {
+			border-radius: 50px;
+			width: 250px;
+			display: inline-block;
+			text-indent: 32px;
+			background: #b6c6d2;
+			color: #5B8096;
+			border: 1px solid #8b969c;
+			padding: 2px !important;
+			font-size: 12.8px;
+			margin-top: 4px;
+			outline: 0;
+		}
+		
+		#search_form>input:focus {
+			background-color: #d5e4ef;
+		}
+		
+		#search_form>input::-webkit-input-placeholder {
+			color: #6a7e8c;
+		}
+		
+		#search_form>input:-moz-placeholder {
+			color: #6a7e8c;
+		}
+		
+		#search_form>input::-moz-placeholder {
+			color: #6a7e8c;
+		}
+		
+		#search_form>input:-ms-input-placeholder {
+			color: #6a7e8c;
+		}
+		
+		#search_form>span.icon-search {
+			position: absolute;
+			left: 10px;
+			top: 4px;
+			line-height: 25px;
+		}
+		@media only screen and (max-width: 780px) {
+			.card>.card-body {
+				padding: 0.3rem 0.5rem;
+			}
+			#body {
+				padding: 0.5rem 0.5rem;
+			}
+			.container {
+				padding-left: 0;
+				padding-right: 0; 
+			}
+		}
+	</style>
+
+	    <link rel="stylesheet" href="plugin/xn_chm/css/user_tree.css" type="text/css">
+    <link rel="stylesheet" href="plugin/xn_chm/css/folder-tree.css" type="text/css">
+<style>
+/*
+box-shadow: 0 0 5px red;
+*/
+@keyframes xndigest {
+	0% { color: red; text-shadow: 0 0 3px #FF8D8D;} 
+	20% { color: orange; text-shadow: 0 0 3px #FFE1AD;} 
+	40% { color: green; text-shadow: 0 0 3px #B3FFAF;} 
+	65% { color: blue; text-shadow: 0 0 3px #AFE4FF;} 
+	80% { color: purple; text-shadow: 0 0 3px #FFC9F3;} 
+	100% { color: red; text-shadow: 0 0 3px #FF8D8D;} 
+}
+
+/*水晶闪烁效果 占内存*/
+i.icon-diamond.flash{color: #D53D38;  /*animation: xndigest 5s linear infinite;*/ }
+
+i.icon-digest-1 {  text-shadow: 0 0 3px #AFE4FF; }
+i.icon-digest-2 {  text-shadow: 0 0 3px #FFF177; }
+i.icon-digest-3 {  text-shadow: 0 0 3px #FF8D8D; }
+.icon-digest-1:before { content: "\f219";  color: #5BC0DE;} /* "\f0a5" */
+.icon-digest-2:before { content: "\f219";  color: #ECA541;}
+.icon-digest-3:before { content: "\f219"; color: #D53D38;}
+.icon-digest-3:afteer { content: "精"; color: #D53D38;}
+</style><style>
+.deleted div.subject > a { text-decoration: line-through; color: grey !important; }
+.deleted div.message { text-decoration: line-through; color: grey !important; }
+</style><style>
+/*
+.toggle_more {
+	max-height: 100px;
+}
+*/
+.update_log_list a.update_log_history, 
+.update_log_list a.update_log_delete {
+	display: none;
+}
+
+.update_log_list > li:hover {
+	background: var(--gray-300);
+}
+.update_log_list > li:hover > a.update_log_history, 
+.update_log_list > li:hover > a.update_log_delete {
+	display: inline-block;
+}
+
+</style><style>
+.icon-new { width: 26px; height: 12px; display: inline-block; background: url(view/img/new.gif)}
+</style>
+</head>
+
+<body>
+
+	
+
+	<header class="navbar navbar-expand-lg navbar-dark bg-dark" id="header">
+	<div class="container mw-100">
+		
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav_pc" aria-controls="navbar_collapse" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		
+		<a class="navbar-brand mr-0 mr-lg-3" href="forum-132.htm" style="font-size: unset;">
+			<img src="plugin/kanxue/img/logo.png" width="21" height="20" />
+							<span class="hidden-lg">『密码算法』</span>
+					</a>
+		
+					<a class="navbar-brand hidden-lg" href="user-login.htm" aria-label="登录"> <i class="icon-user icon"></i></a>
+				
+		<div class="collapse navbar-collapse" id="nav_pc">
+			<!-- 左侧：版块 -->
+			<ul class="navbar-nav mr-auto">
+				
+				<li class="nav-item"><a class="nav-link" href="//www.kanxue.com">学院</a></li>
+				<li class="nav-item"><a class="nav-link" href="//job.kanxue.com">招聘</a></li>
+				<li class="nav-item"><a class="nav-link" href="//www.kanxue.com/chm.htm">知识库</a></li>
+				<li class="nav-item"><a class="nav-link" href="//zhuanlan.kanxue.com">专栏</a></li>
+				<li class="nav-item"><a class="nav-link" href="//ctf.pediy.com">CTF</a></li>
+				<li class="nav-item"><a class="nav-link" href="//ce.kanxue.com">众测</a></li>
+				<li class="nav-item"><a class="nav-link" href="//www.kanxue.com/tool.htm">工具</a></li>
+				<li class="nav-item"><a class="nav-link" href="//www.kanxue.com/service.htm">企业服务</a></li>
+				<li class="nav-item"><a class="nav-link" href="//www.kanxue.com/conference.htm" target="_blank">看雪峰会</a></li>
+				<li class="nav-item active"><a class="nav-link" href="//bbs.pediy.com">论坛</a></li>
+			</ul>
+			<!-- 右侧：用户 -->
+			<ul class="navbar-nav">
+				<li class="nav-item d-lg-none">
+					<form action="search.htm" class="w-100" id="search_form">
+						<input type="text" class="w-100" placeholder="关键词 回车搜索" name="keyword">
+						<span class="icon-search"></span>
+					</form>
+				</li>
+			
+				<li class="nav-item"><a class="nav-link" href="user-login.htm"><i class="icon-user"></i> 登录</a></li>
+				<!--<li class="nav-item"><a class="nav-link" href="user-create.htm">注册</a></li>-->
+				
+			
+			</ul>
+		</div>
+	</div>
+</header>
+	<div class="hidden-sm hidden-md" style="background:#748692 url(plugin/kanxue/img/header_bg.gif)" id="nav2">
+		<div class="container" style="height: 76px;">
+			<div class="row">
+				<div class="col-lg-6">
+					<a href="./"><img src="plugin/kanxue/img/logo_bbs.png" width="359" height="76" class="ml-1" /></a>
+				</div>
+				<div class="col-lg-6 text-right pt-4">
+					<form action="search.htm" id="search_form">
+						<input type="text" placeholder="关键词 回车搜索" name="keyword">
+						<span class="icon-search"></span>
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<main style="background: #e8ecef url(plugin/kanxue/img/body_bg.jpg) repeat-x" id="body">
+		<div class="container">
+
+			
+
+					
+		
+		<ol class="breadcrumb mb-2 hidden-md-down">
+			<li class="breadcrumb-item"><a href="./" aria-label="首页"><i class="icon-home"></i> 看雪论坛</a></li>
+			<li class="breadcrumb-item"><a href="forum-132.htm">『密码算法』</a></li>
+			<!-- <li class="breadcrumb-item active"><a href="thread-174969.htm" title="首页返回主题第一页">[讨论]RC4算法暴力破解的尝试(附源码)</a></li> -->
+			
+
+			<div class="media-body text-right">
+							<a href="thread-create-132.htm" role="button" class="btn btn-sm btn-primary" style="float: right;">发新帖</a>
+						</div>
+		</ol>
+		
+	
+		<div class="card">
+			<div class="card-body">
+				<dl class="row">
+					<dt class="vtop" style="width: 56px; text-align: center;">
+						<div class="avatar_info">
+							<a href="user-522307.htm" aria-hidden="true" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/307/522307.png?1">
+							</a>
+							<div>
+								<span class="group group-106" title="六级"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -6px; ">
+																<span class="icon-diamond text-danger" title="精华数"></span><span class="font-weight-bold text-danger"> 6</span>
+															</div>
+							
+						</div>
+					</dt>
+					<!--
+					<dd class="vtop" style="width: 100px;">
+						<div class="text-grey" style="font-size: 9px; margin-top: 4px;">
+							注册：2012-5 <br>
+							帖子：260 <br>
+														精华：<span class="text-danger font-weight-bold">6</span> <br>
+														<span class="hidden-md-down" title=""></span>
+						</div>
+					</dd>
+					-->
+					<dd class="vtop">
+						
+						<h3 class="break-all subject">
+																			
+													[讨论]RC4算法暴力破解的尝试(附源码)														
+																		
+									<i class="icon-digest-3" aria-hidden="true" title="精华"></i>
+							
+						</h3>
+						
+						<dl class="row small">
+							<dt style="padding: 0px;">
+								
+								<span class="username font-weight-bold">
+									<a href="user-522307.htm">MistHill</a>
+								</span>
+								
+								
+								<span class="date text-grey ml-3">2013-7-7 10:46</span>
+								<span class="text-grey ml-3 hidden-md-down"><i class="icon-eye" aria-hidden="true"></i> 43838</span>
+								
+							</dt>
+							<dd class="text-right">
+																																
+																
+															</dd>
+						</dl>
+											</dd>
+				</dl>
+				
+				
+				<hr aria-hidden="true" />
+					
+				<div class="message break-all" isfirst="1">
+								
+					
+					目录：<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;一．命题<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;二．C源码的故事<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;三．望尽天涯路<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;四．蓦然回首<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;五．单线程与多线程性能对比<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;六．附件说明<br />
+<br />
+<font color="DarkRed"><b>一．命题</b></font><br />
+问题来源于帖子“<a href="http://bbs.pediy.com/showthread.php?t=170234" target="_blank"><font color=""RoyalBlue"">关于RC4算法的暴力破解问题</font></a>”。新开一帖，将解决问题的过程写出来与大家探讨，同时给人一个膜拜的机会<img src="/view/img/face/41.gif" width="24" height="24" />。问题肯定多多，欢迎鄙视<img src="/view/img/face/28.gif" width="24" height="24" />！<br />
+<br />
+前段时间在弄一个目标，几乎可以肯定是某种对称加密算法，但是不能确定是哪一个。于是将一些常见的对称算法依次过了一遍，包括3-WAY、AES(RIJNDAEL)、DES/TDEA、IDEA、RC4、RC6、TEA等等。<br />
+之前对这些东西并不熟悉，学习过程中走了弯路。一开始是看一些知道的库的源码，比如cryptlib、cryptopp、OpenSSL和LibTomCrypt等。后来才发现这些库为方便使用，大都经过封装，虽然标准规范摆在那里，要从中学习算法代码的具体实现反到不合适——细节被隐藏了——让人不能抓住重点。<br />
+而且这些库都是借用了别人的代码。以DES算法为例，在我关注帖子“<a href="http://bbs.pediy.com/showthread.php?t=172410" target="_blank"><font color=""RoyalBlue"">DES算法求助</font></a>”时，仔细研究了一下。<br />
+<br />
+cryptlib和OpenSSL是基于"Eric&nbsp;Young"的代码，cryptopp源于"Phil&nbsp;Karn"的des.c。在输入相同的情况下，LibTomCrypt与KARN_portable产生的key&nbsp;schedule完全一致。这些公开的库必须是符合DES标准的，所以同样的输入得到相同的输出。<br />
+“DES算法求助”里的算法有点另类，逆向它的加密算法后，根据DES的原理，写出了它的解密算法。没花时间去进一步研究为什么它与标准库的输出不同。<br />
+<br />
+本命题可简化为：已知RC4算法Keystream的前8个字节，求对应的Key(密钥)：<br />
+<b><font=""Courier"">Keystream(Hex.):&nbsp;<font color="RoyalBlue">50&nbsp;35&nbsp;38&nbsp;62&nbsp;2C&nbsp;1E&nbsp;0C&nbsp;6F</font></font></b><br />
+<br />
+<font color="DarkRed"><b>二．C源码的故事</b></font><br />
+关于RC4攻击有很多文章可读，比如这里：<a href="http://www.wisdom.weizmann.ac.il/~itsik/RC4/rc4.html" target="_blank"><font color=""RoyalBlue"">http://www.wisdom.weizmann.ac.il/~itsik/RC4/rc4.html</font></a>。<br />
+粗略看了几篇，不得要领。回过头来尝试“暴力”。<br />
+<br />
+诚如原帖楼主所言，“暴力破解”(brute-force&nbsp;attack)，或称穷举法(exhaustive&nbsp;key&nbsp;search)，效率是关键，VB在这里稍微高级了点，低级的C比较合适，有利于优化。<br />
+正好手头有RC4算法的C源码：<b>RC4.C</b>。来自"<font color=""Sienna"">Applied&nbsp;Cryptography:&nbsp;Protocols,&nbsp;Algorithms,&nbsp;and&nbsp;Source&nbsp;Code&nbsp;in&nbsp;C,&nbsp;Second&nbsp;Edition</font>"一书的配套光盘。<br />
+从作者"Bruce&nbsp;Schneier"的说明来看，它正是某人匿名公开到sci.crypt的那个东西。他在该书的RC4章节讲述了它的来源。<br />
+<br />
+<blockquote class="blockquote">RC4最早由"RSA&nbsp;Data&nbsp;Security,&nbsp;Inc."的"Ron&nbsp;Rivest"(RSA中的R)在1987年设计，随后的七年中一直是专有的，算法的细节只有在签署保密协议后才可使用。<br>1994年9月，有人匿名将源码发布到Cypherpunks的邮件列表中。然后迅速蔓延到Usenet的新闻组sci.crypt，并通过互联网出现在世界各地的FTP站点。拥有RC4合法副本的人确认了这个泄露源码的输出与经过授权的RC4完全一致。<br>"RSA&nbsp;Data&nbsp;Security,&nbsp;Inc."试图把这个精灵重新放回魔瓶里，声称即便它已经公开，但仍然属于商业秘密。<br>不过为时已晚。此后，在Usenet上它一再被讨论和详细分析，在各种会议上分发，并在密码学课程中讲解。</blockquote>维基上讲：RC4名称本身是注册商标，所以人们往往将其称为ARCFOUR或ARC4(alleged&nbsp;RC4)以避开商标问题。虽然"RSA&nbsp;Security"从未正式发布其算法，但是Rivest自己却在某个课程笔记中将其指向英文维基百科的RC4条目。<br />
+RC4已经成为一些常用加密协议和标准的一部分，比如WEP、WPA和TLS。它在如此众多应用领域取得成功的主要因素在于其速度和简易，在软件和硬件上都易于得到高效的实现。<br />
+可以从RC4.C中发现确实如此，非常简单，但你不得不赞叹它的精妙。<br />
+<br />
+<font color="DarkRed"><b>三．望尽天涯路</b></font><br />
+在RC4.C的基础上，稍微修改一下，就可以从事“暴力”活动了。<br />
+发现RC4.C的<b>Line#92</b>一行可能是笔误：<br />
+<font=""Courier"">&nbsp;&nbsp;&nbsp;&nbsp;xorIndex&nbsp;=&nbsp;state[x]&nbsp;+&nbsp;<font color="Red"><b>(</b></font>state[y]<font color="Red"><b>)</b></font>&nbsp;%&nbsp;256;</font><br />
+对比<a href="http://en.wikipedia.org/wiki/RC4" target="_blank"><font color=""RoyalBlue"">http://en.wikipedia.org/wiki/RC4</font></a>的算法部分，应为：<br />
+<font=""Courier"">&nbsp;&nbsp;&nbsp;&nbsp;xorIndex&nbsp;=&nbsp;<font color="Red"><b>(</b></font>state[x]&nbsp;+&nbsp;state[y]<font color="Red"><b>)</b></font>&nbsp;%&nbsp;256;</font><br />
+由于结果和运算数据的类型均为unsigned&nbsp;char，所以不会有任何影响，不易察觉。<br />
+<br />
+因为RC4的Key是可变长度的，为了通用，设计了一个<b>递归函数</b>(Recursive&nbsp;Function)，将<b>prepare_key</b>函数和<b>rc4</b>函数(改为<b>GetKeyStream</b>函数)放进去。再定义三个全局变量：int&nbsp;KeyLength，unsigned&nbsp;char&nbsp;Key[8]和unsigned&nbsp;char&nbsp;KeyStream[8]。<br />
+程序的思路非常直接：KeyLength的取值为1~8，编译时给定一个KeyLength，程序将Key的KeyLength个字符从0x00~0xFF进行穷举，计算KeyStream的字符，如果匹配目标KeyStream，则表明找到一个Key。<br />
+<br />
+所以程序只支持最长8字节Key的尝试，不要小看它，到后来才发现要枚举它的每一种组合完全是<b>Mission&nbsp;Impossible</b>。<br />
+只是一个命令行的小程序(Console&nbsp;Application)，一开始还打印出每一循环的Key，实在太慢就删掉了。<br />
+在KeyLength为1~3时，很快有结果，无解。在KeyLength=4时，在我的测试机器上等待的时间就稍长了，同样无解。<br />
+在KeyLength≧5时，事情变得糟糕了，运行时只有光标在闪烁，不知道进度，也不知道程序是否正常。于是增加两个热键：<br />
+<font=""Courier"">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="DarkOrchid"><b>CTRL+C</b>&nbsp;可打印当前Key的值以显示进度。</font></font><br />
+<font=""Courier"">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="DarkOrchid"><b>CTRL+BREAK</b>&nbsp;用于终止程序，并打印程序的开始、终止、运行时间及Key的进度。</font></font><br />
+同时，将目标Keystream减少为4字节(unsigned&nbsp;char&nbsp;KeyStream[4])，一方面GetKeyStream函数会快一倍，同时增加了获得匹配输出的机会。面对一个没有任何输出的屏幕是令人沮丧的。<br />
+在得到一个Key的输出后，通过另一个小程序来验证Keystream的第二个4字节。<br />
+<br />
+在一些明显影响效率的地方也进行了优化。<br />
+对每一个给定的Key，prepare_key函数首先要对unsigned&nbsp;char&nbsp;state[256]进行初始化：各字节赋值依次为0x00~0xFF。每一循环都要在内存中逐字节写256次是很慢的，改为在main函数中写好，需要时通过<b><font=""Courier"">memcpy</font></b>函数进行复制，编译器基本上会生成"<b><font=""Courier"">REP&nbsp;MOVSD</font></b>"指令，这样会快很多。<br />
+<br />
+编程工作在虚拟机里进行，运行是在另一台物理机"Intel&nbsp;Core2&nbsp;Quad&nbsp;CPU"里进行。几年前的机器，速度较慢。关闭杀软的实时检测，停用不需要的服务。<br />
+在这个四核机器上同时运行四个实例，KeyLength分别对应5~8。在运行约7小时后终止程序，得到以下结果：<br />
+<font=""Courier"">Keystream&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Key<br />
+---------&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;---<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;01&nbsp;2F&nbsp;C7&nbsp;32&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;01&nbsp;4E&nbsp;3B&nbsp;4D&nbsp;40<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;9C&nbsp;7E&nbsp;88&nbsp;8A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;01&nbsp;C0&nbsp;1C&nbsp;FD&nbsp;D2<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;EA&nbsp;61&nbsp;1B&nbsp;17&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;02&nbsp;86&nbsp;2B&nbsp;88&nbsp;6E<br />
+</font><font=""Courier""><font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;23&nbsp;E7&nbsp;8D&nbsp;96&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;02&nbsp;F3&nbsp;DF&nbsp;6F&nbsp;84</font><br />
+<font=""Courier""><font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;2B&nbsp;97&nbsp;FE&nbsp;78&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;03&nbsp;53&nbsp;18&nbsp;DF&nbsp;55<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;EF&nbsp;C0&nbsp;78&nbsp;A3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;03&nbsp;9A&nbsp;C8&nbsp;18&nbsp;79<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;F1&nbsp;06&nbsp;6F&nbsp;45&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;00&nbsp;42&nbsp;A2&nbsp;B9&nbsp;47<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;2F&nbsp;6C&nbsp;A9&nbsp;BA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;01&nbsp;71&nbsp;68&nbsp;2F&nbsp;8F<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;A4&nbsp;A8&nbsp;9C&nbsp;4E&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;01&nbsp;96&nbsp;46&nbsp;CB&nbsp;B1<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;A8&nbsp;78&nbsp;6E&nbsp;A9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;02&nbsp;16&nbsp;9E&nbsp;9B&nbsp;6F<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;6A&nbsp;3A&nbsp;80&nbsp;EA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;02&nbsp;22&nbsp;87&nbsp;9B&nbsp;A9<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;64&nbsp;94&nbsp;FB&nbsp;FD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;00&nbsp;02&nbsp;EF&nbsp;99&nbsp;40&nbsp;65<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;4C&nbsp;EA&nbsp;00&nbsp;FB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;00&nbsp;03&nbsp;CA&nbsp;04&nbsp;AA&nbsp;30<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;38&nbsp;1D&nbsp;3C&nbsp;97&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;00&nbsp;04&nbsp;55&nbsp;64&nbsp;20&nbsp;9F<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;E9&nbsp;F2&nbsp;56&nbsp;54&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;00&nbsp;04&nbsp;9B&nbsp;8E&nbsp;75&nbsp;0E<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;EA&nbsp;B8&nbsp;29&nbsp;83&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;8E&nbsp;BE&nbsp;23&nbsp;FE<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;33&nbsp;8E&nbsp;BD&nbsp;4D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;00&nbsp;00&nbsp;01&nbsp;85&nbsp;25&nbsp;46&nbsp;B6<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;0A&nbsp;21&nbsp;C8&nbsp;50&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;00&nbsp;00&nbsp;01&nbsp;FE&nbsp;F9&nbsp;31&nbsp;C2<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;50&nbsp;7F&nbsp;DF&nbsp;9D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;00&nbsp;00&nbsp;02&nbsp;5C&nbsp;17&nbsp;DC&nbsp;D6<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;4C&nbsp;B8&nbsp;44&nbsp;28&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;00&nbsp;00&nbsp;03&nbsp;91&nbsp;93&nbsp;B2&nbsp;F3<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;97&nbsp;43&nbsp;2D&nbsp;5A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;00&nbsp;00&nbsp;03&nbsp;9D&nbsp;93&nbsp;BC&nbsp;01<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;DF&nbsp;E3&nbsp;49&nbsp;0E&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;00&nbsp;00&nbsp;03&nbsp;FC&nbsp;D1&nbsp;E9&nbsp;0D<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;EF&nbsp;63&nbsp;4E&nbsp;82&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;00&nbsp;00&nbsp;03&nbsp;FF&nbsp;9C&nbsp;77&nbsp;6A<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;18&nbsp;11&nbsp;60&nbsp;20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00&nbsp;00&nbsp;00&nbsp;05&nbsp;AF&nbsp;67&nbsp;30&nbsp;F8</font><br />
+令人失望，没有一个符合目标Keystream。但证实了原来的猜想：对给定长度的Keystream，存在多解。<br />
+<br />
+<font color="DarkRed"><b>四．蓦然回首</b></font><br />
+显然继续下去是毫无意义的。既然这个Key是人为的，那么可以尝试字典攻击。但在这之前决定缩小Key中每个字符的范围再试一下。<br />
+本想限定为数字加字母，改写时为减少几个判断，索性将每个字符的取值定为0x30~0x7A(共0x4B，75.个字符)：<br />
+<font=""Courier"">00000000:&nbsp;&nbsp;30&nbsp;31&nbsp;32&nbsp;33&nbsp;34&nbsp;35&nbsp;36&nbsp;37&nbsp;38&nbsp;39&nbsp;3A&nbsp;3B&nbsp;3C&nbsp;3D&nbsp;3E&nbsp;3F&nbsp;&nbsp;0123456789:;&lt;=&gt;?<br />
+00000010:&nbsp;&nbsp;40&nbsp;41&nbsp;42&nbsp;43&nbsp;44&nbsp;45&nbsp;46&nbsp;47&nbsp;48&nbsp;49&nbsp;4A&nbsp;4B&nbsp;4C&nbsp;4D&nbsp;4E&nbsp;4F&nbsp;&nbsp;@ABCDEFGHIJKLMNO<br />
+00000020:&nbsp;&nbsp;50&nbsp;51&nbsp;52&nbsp;53&nbsp;54&nbsp;55&nbsp;56&nbsp;57&nbsp;58&nbsp;59&nbsp;5A&nbsp;5B&nbsp;5C&nbsp;5D&nbsp;5E&nbsp;5F&nbsp;&nbsp;PQRSTUVWXYZ[\]^_<br />
+00000030:&nbsp;&nbsp;60&nbsp;61&nbsp;62&nbsp;63&nbsp;64&nbsp;65&nbsp;66&nbsp;67&nbsp;68&nbsp;69&nbsp;6A&nbsp;6B&nbsp;6C&nbsp;6D&nbsp;6E&nbsp;6F&nbsp;&nbsp;`abcdefghijklmno<br />
+00000040:&nbsp;&nbsp;70&nbsp;71&nbsp;72&nbsp;73&nbsp;74&nbsp;75&nbsp;76&nbsp;77&nbsp;78&nbsp;79&nbsp;7A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pqrstuvwxyz</font><br />
+这样计算量大幅降低。新程序的C文件命名为：<b>rc4KStream75.c</b>。<br />
+<br />
+补充两个优化时应注意的问题。<br />
+其一，RC4.C中的prepare_key函数和rc4函数各有几处<b>取模操作符</b>(<b>%</b>)，通常会编译为<b>IDIV</b>指令，我们知道除法会严重影响性能。应该改写，将%消灭。这个容易，既然运算的数据全为unsigned&nbsp;char，%256完全是多此一举。<br />
+剩下一个"%&nbsp;key_data_len"改为"-=&nbsp;key_data_len"的循环。<br />
+其二，<b>编译选项</b>。我虚拟机里是VC6，不同版本的Visual&nbsp;Studio选项有些许差异。应根据运行时的目标机器建立测试基准，耐心地试验各种选项组合，以确定最快的一个。<br />
+举个例子，/Ot意为"Favors&nbsp;fast&nbsp;code"，不要轻信编译器的优化能力。应选择/Os("Favors&nbsp;small&nbsp;code")。较少的机器指令会明显提高执行效率，有数倍的差距！<br />
+<br />
+后来为加快进度，又试着写了一个四线程的版本：<b>rc4KStream75MT.c</b>。<br />
+单线程用/ML和/MD没有太大差别，而多线程一定要用/MT。<br />
+另外最好用Hiew等工具检查一下prepare_key和GetKeyStream两个关键函数的指令是否符合C代码的预期。理论上这两个函数最好用汇编来写，看了一下，感觉自己写出来的东西比编译器强不到那里去，而且后来很快就有了答案，好奇心既已满足，便不再深究。<br />
+<br />
+没想到，在KeyLength=5的那个实例中答案很快揭晓，并且是唯一的匹配项。以下是验证程序汇集其它匹配Key的输出结果。<br />
+<font=""Courier""><b>Target&nbsp;Keystream:</b><br />
+<b><font color="RoyalBlue">50&nbsp;35&nbsp;38&nbsp;62&nbsp;2C&nbsp;1E&nbsp;0C&nbsp;6F</font></b><br />
+<br />
+Keystream&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String<br />
+---------&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;---&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;------<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62&nbsp;2C&nbsp;1E&nbsp;0C&nbsp;6F</font>&nbsp;&nbsp;&nbsp;&nbsp;31&nbsp;32&nbsp;33&nbsp;34&nbsp;35&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><font color="SeaGreen">12345</font></b><br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;1E&nbsp;23&nbsp;14&nbsp;43&nbsp;&nbsp;&nbsp;&nbsp;30&nbsp;77&nbsp;47&nbsp;71&nbsp;78&nbsp;72&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0wGqxr<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;33&nbsp;61&nbsp;75&nbsp;03&nbsp;&nbsp;&nbsp;&nbsp;31&nbsp;47&nbsp;3B&nbsp;36&nbsp;3D&nbsp;4E&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1G;6=N<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;95&nbsp;A7&nbsp;ED&nbsp;12&nbsp;&nbsp;&nbsp;&nbsp;32&nbsp;4F&nbsp;70&nbsp;49&nbsp;6F&nbsp;31&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2OpIo1<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;55&nbsp;D1&nbsp;B7&nbsp;E4&nbsp;&nbsp;&nbsp;&nbsp;30&nbsp;32&nbsp;67&nbsp;61&nbsp;71&nbsp;39&nbsp;65&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;02gaq9e<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;0B&nbsp;D1&nbsp;62&nbsp;59&nbsp;&nbsp;&nbsp;&nbsp;30&nbsp;33&nbsp;57&nbsp;72&nbsp;52&nbsp;6B&nbsp;3D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;03WrRk=<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;57&nbsp;94&nbsp;D7&nbsp;D6&nbsp;&nbsp;&nbsp;&nbsp;30&nbsp;35&nbsp;4D&nbsp;56&nbsp;57&nbsp;61&nbsp;48&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;05MVWaH<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;48&nbsp;51&nbsp;FE&nbsp;B6&nbsp;&nbsp;&nbsp;&nbsp;30&nbsp;30&nbsp;32&nbsp;72&nbsp;3B&nbsp;45&nbsp;41&nbsp;59&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;002r;EAY<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;5B&nbsp;45&nbsp;F7&nbsp;54&nbsp;&nbsp;&nbsp;&nbsp;30&nbsp;30&nbsp;33&nbsp;63&nbsp;5D&nbsp;43&nbsp;36&nbsp;35&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;003c]C65<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;BC&nbsp;87&nbsp;E4&nbsp;B9&nbsp;&nbsp;&nbsp;&nbsp;30&nbsp;30&nbsp;33&nbsp;63&nbsp;6A&nbsp;4F&nbsp;67&nbsp;3F&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;003cjOg?<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;80&nbsp;FD&nbsp;34&nbsp;7A&nbsp;&nbsp;&nbsp;&nbsp;30&nbsp;30&nbsp;33&nbsp;64&nbsp;50&nbsp;69&nbsp;45&nbsp;5A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;003dPiEZ<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;9E&nbsp;7F&nbsp;E6&nbsp;FE&nbsp;&nbsp;&nbsp;&nbsp;30&nbsp;30&nbsp;34&nbsp;48&nbsp;7A&nbsp;4E&nbsp;68&nbsp;32&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;004HzNh2<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;8A&nbsp;2F&nbsp;47&nbsp;DB&nbsp;&nbsp;&nbsp;&nbsp;30&nbsp;30&nbsp;35&nbsp;63&nbsp;50&nbsp;3B&nbsp;3B&nbsp;4B&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;005cP;;K<br />
+<font color="SeaGreen">50&nbsp;35&nbsp;38&nbsp;62</font>&nbsp;2A&nbsp;91&nbsp;D0&nbsp;81&nbsp;&nbsp;&nbsp;&nbsp;30&nbsp;30&nbsp;35&nbsp;71&nbsp;55&nbsp;44&nbsp;72&nbsp;40&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;005qUDr@<br />
+<br />
+<font color="Red">00&nbsp;F8&nbsp;7E&nbsp;67</font>&nbsp;24&nbsp;33&nbsp;15&nbsp;9C&nbsp;&nbsp;&nbsp;&nbsp;31&nbsp;32&nbsp;33&nbsp;34&nbsp;35&nbsp;36&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;123456<br />
+<font color="Red">7D&nbsp;0F&nbsp;D8&nbsp;8F</font>&nbsp;D1&nbsp;B4&nbsp;16&nbsp;6C&nbsp;&nbsp;&nbsp;&nbsp;31&nbsp;32&nbsp;33&nbsp;34&nbsp;35&nbsp;36&nbsp;37&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1234567<br />
+<font color="Red">BB&nbsp;F3&nbsp;39&nbsp;D4</font>&nbsp;09&nbsp;B1&nbsp;DE&nbsp;A7&nbsp;&nbsp;&nbsp;&nbsp;31&nbsp;32&nbsp;33&nbsp;34&nbsp;35&nbsp;36&nbsp;37&nbsp;38&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12345678</font><br />
+<br />
+让人大跌眼镜，第一行的Keystream竟然与目标完全一致！我们可以大胆地猜测它就是正确的Key，又一次证明简单密钥的危险！最后三行是有意增加的，列在这里仅为了对比。<br />
+<br />
+<font color="DarkRed"><b>五．单线程与多线程性能对比</b></font><br />
+以下为附件中最终版本找到Key时的运行记录：<br />
+<font=""Courier"">rc4KStream75_5.exe<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Found:&nbsp;&nbsp;31&nbsp;32&nbsp;33&nbsp;34&nbsp;35&nbsp;&nbsp;<b><font color="SeaGreen">52.265</font></b>&nbsp;sec.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start:&nbsp;&nbsp;2013-07-04&nbsp;16:43:06.687<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End:&nbsp;&nbsp;&nbsp;&nbsp;2013-07-04&nbsp;17:46:41.531<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Execution&nbsp;time:&nbsp;<font color="DarkOrange">3814.844</font>&nbsp;seconds.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1h03m34s<br />
+rc4KStream75MT_5.exe<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Found:&nbsp;&nbsp;31&nbsp;32&nbsp;33&nbsp;34&nbsp;35&nbsp;&nbsp;<b><font color="SeaGreen">81.766</font></b>&nbsp;sec.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start:&nbsp;&nbsp;2013-07-04&nbsp;15:40:03.000<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End:&nbsp;&nbsp;&nbsp;&nbsp;2013-07-04&nbsp;16:08:41.812<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Execution&nbsp;time:&nbsp;<font color="DarkOrange">1718.813</font>&nbsp;seconds.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;28m38s</font><br />
+单线程找出它用了52秒，而多线程用了81秒，这有点奇怪。整个5字节的Key搜索完成，单线程用时约一小时，多线程仅耗时28分钟。<br />
+<br />
+用于编程虚拟机的Host是更早的双Intel&nbsp;Xeon&nbsp;CPU，共四核。但VM只配置了一个处理器、单核。以下为两台机器跑完KeyLength=3后的耗时对比(秒为单位)：<br />
+<font=""Courier"">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Intel&nbsp;Core2&nbsp;Quad&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Intel&nbsp;Xeon(VM)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;----------------&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--------------<br />
+rc4KStream75_3.exe&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.671~0.688&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><font color="DarkOrange">1.62&nbsp;~1.78</font></b><br />
+rc4KStream75MT_3.exe&nbsp;&nbsp;&nbsp;&nbsp;0.312~0.344&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><font color="DarkOrange">1.296~1.313</font></b></font><br />
+就虚拟机自身比较，多线程要快于单线程。无单核物理机进行对比测试。<br />
+<br />
+最后对完成KeyLength=6~8的用时作一个大致估算，以4字节Key的实际数据为依据：<br />
+<font=""Courier"">rc4KStream75_4.exe<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start:&nbsp;&nbsp;2013-07-04&nbsp;16:38:59.593<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End:&nbsp;&nbsp;&nbsp;&nbsp;2013-07-04&nbsp;16:39:50.515<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Execution&nbsp;time:&nbsp;<b><font color="DarkOrange">50.922</font></b>&nbsp;seconds.<br />
+<br />
+5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;50.922&nbsp;*&nbsp;75**1&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="SeaGreen">3819</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1h03m39s(结果与实际接近)<br />
+6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;50.922&nbsp;*&nbsp;75**2&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;286436&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3D07h33m56s<br />
+7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;50.922&nbsp;*&nbsp;75**3&nbsp;=&nbsp;&nbsp;&nbsp;21482718&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;248D15h25m18s<br />
+8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;50.922&nbsp;*&nbsp;75**4&nbsp;=&nbsp;<font color="Red">1611203906</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;18648D04h38m26s(51Y33D)<br />
+<br />
+rc4KStream75MT_4.exe<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start:&nbsp;&nbsp;2013-07-04&nbsp;16:13:09.015<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End:&nbsp;&nbsp;&nbsp;&nbsp;2013-07-04&nbsp;16:13:31.609<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Execution&nbsp;time:&nbsp;<b><font color="DarkOrange">22.594</font></b>&nbsp;seconds.<br />
+<br />
+5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;22.594&nbsp;*&nbsp;75**1&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="SeaGreen">1694</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;28m14s(结果与实际接近)<br />
+6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;22.594&nbsp;*&nbsp;75**2&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;127091&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1D11h18m11s<br />
+7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;22.594&nbsp;*&nbsp;75**3&nbsp;=&nbsp;&nbsp;&nbsp;9531843&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;110D07h44m03s<br />
+8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;22.594&nbsp;*&nbsp;75**4&nbsp;=&nbsp;<font color="Red">714888281</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8274D04h04m41s(22Y244D)</font><br />
+<br />
+测试是一门单独的学科，这里并不严格，只想借此说明问题。这台机器上，在Key为8字节、各字节为75个可能和只计算Keystream首4字节的情况下，单线程需要51年，多线程也需要近23年。<br />
+可见密钥长度和复杂程度的重要性！<br />
+<br />
+<b><font color="DarkRed">六．附件说明</font></b><br />
+<br />
+<font=""Courier"">&nbsp;&nbsp;&nbsp;&nbsp;Size&nbsp;&nbsp;Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description<br />
+--------&nbsp;&nbsp;------------------&nbsp;&nbsp;&nbsp;&nbsp;-----------<br />
+&nbsp;&nbsp;&nbsp;&nbsp;1222&nbsp;&nbsp;RC4.ZIP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cypherpunks邮件列表的C源码<br />
+&nbsp;&nbsp;&nbsp;&nbsp;4403&nbsp;&nbsp;rc4KStream75.c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单线程C源码<br />
+&nbsp;&nbsp;&nbsp;&nbsp;6979&nbsp;&nbsp;rc4KStream75MT.c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;四线程C源码<br />
+&nbsp;&nbsp;&nbsp;16384&nbsp;&nbsp;rc4KStream75.exe&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MD5:&nbsp;844a293a3fe268312e2babbbe8b095e4<br />
+&nbsp;&nbsp;&nbsp;45056&nbsp;&nbsp;rc4KStream75MT.exe&nbsp;&nbsp;&nbsp;&nbsp;MD5:&nbsp;1aa9459479658fb5230bd1e1721b8ae9</font><br />
+<br />
+因为简单，就没有项目了。直接用命令行进行Build，最终的编译选项见各源码注释，KeyLength=3。<br />
+视你的机器和C编译器版本，调整选项重新编译。<br />
+如果用我的exe，对其它KeyLength，找个编辑器直接改exe的一个字节就好了：rc4KStream75.exe文件偏移<b>0x3010</b>处，rc4KStream75MT.exe文件偏移<b>0x8030</b>处，现在是0x03，可改为<b>0x01~0x08</b>。<br />
+<br />
+还有些问题，比如提高进程自身的优先级会对速度有多大影响，中断后下次怎么继续等等，留给感兴趣的人接着玩吧！<br />
+<br />
+字典攻击方面，要得到本例的答案，应该不会需要太多时间。几年前干过一件事，好象是用Rainbow字典，为Windows登录密码大概是长度为8、字母+数字的组合生成约1GB的Hash库，时间久已记不清了，残存的印象是从当时的测试结果来看，效果非常好。另外也有网站提供根据SAM里的Hash查明文的服务。<br />
+<br />
+以前数学太烂，写代码又非职业程序员，基本上复制粘贴。这两天看温网，转播评论员说，“业余爱好者千万别学A.radwanska”。确实看她打球就觉得别扭，瞧瞧人家小德的动作多么规范！就是这个意思了。<br />
+Anyway，文章写出来总是希望有更多人读的。好评/差评？亲，你怎么看<img src="/view/img/face/12.gif" width="24" height="24" />。					<br><br>
+<p><a href="https://job.kanxue.com/" target="_blank"><b>快讯：</b>[看雪招聘]十八年来，看雪平台输出了大量安全人才，影响三代安全人才！  </a></p>
+					
+					<fieldset class="fieldset">
+<legend>上传的附件：</legend>
+<ul class="attachlist attach_tourist">
+<li aid="80505">
+		<a href="javascript:void(0)" class="modal-title" id="exampleModalLabel" data-toggle="modal" data-target=".download_code" data-aid="80505">
+			<i class="icon filetype zip"></i>
+			RC4.BruteForceAttack.MistHill.7z
+		</a>
+		<span class="">（20.25kb，432次下载）</span>
+</li>
+</ul>
+</fieldset>
+					
+					
+								</div>
+				
+				<div>
+								</div>
+			</div>
+		</div>
+		
+		                                
+                <!--赞赏支持-->
+                <div class="modal fade reward" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="exampleModalLabel">赞赏</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form action="" method="post" id="pay_kx" onsubmit="return topay()">
+                                                <div class="modal-body text-center">
+                                                        <div class="form-group">
+                                                                <input name="ureward" type="hidden" value="522307" />
+                                                                <input type="hidden" name="reward_articleid" value="174969" />
+                                                                <div class="avatar-3 mb-3" style="width: 70px;height: 70px;display: inline-block;">
+                                                                    <img src="view/img/dashang.png" alt="100" />
+                                                                </div>
+                                                                
+                                                                <div class="text-center mb-2">
+                                                                    <div class="" data-toggle="buttons">
+                                                                        <label class="btn btn-outline-danger active" style="width:120px">
+                                                                            <input type="radio" value="1" name="reward_rmbs" id="option1" autocomplete="off" checked>1 元
+                                                                        </label>
+                                                                        <label class="btn btn-outline-danger" style="width:120px">
+                                                                            <input type="radio" value="2" name="reward_rmbs" id="option2" autocomplete="off">2 元
+                                                                        </label>
+                                                                        <label class="btn btn-outline-danger" style="width:120px">
+                                                                            <input type="radio" value="5" name="reward_rmbs" id="option3" autocomplete="off">5 元
+                                                                        </label>
+                                                                        <label class="btn btn-outline-danger" style="width:120px">
+                                                                            <input type="radio" value="10" name="reward_rmbs" id="option4" autocomplete="off">10 元
+                                                                        </label>
+                                                                        <label class="btn btn-outline-danger" style="width:120px">
+                                                                            <input type="radio" value="20" name="reward_rmbs" id="option5" autocomplete="off">20 元
+                                                                        </label>
+                                                                        <label class="btn btn-outline-danger" style="width:120px">
+                                                                            <input type="radio" value="50" name="reward_rmbs" id="option6" autocomplete="off">50 元
+                                                                        </label>
+                                                                        <label class="btn btn-outline-danger" style="width:120px">
+                                                                            <input type="radio" value="100" name="reward_rmbs" id="option7" autocomplete="off">100 元
+                                                                        </label>
+                                                                        <label class="btn btn-outline-danger" style="width:120px">
+                                                                            <input type="radio" value="200" name="reward_rmbs" id="option8" autocomplete="off">200 元
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="text-center">
+                                                                    <label id="alipay_lab">
+                                                                        <span>支付方式：</span>
+                                                                        <input type="radio" value="1" checked="checked" name="reward_type" style="display:inline" />
+                                                                        <span class="alipay-bg"></span>
+                                                                    </label>
+                                                                   <!--  <label class="m-l-1">
+                                                                        <input type="radio" value="3" name="reward_type">
+                                                                        <i class="icon icon-weixin" style="font-size:17px;color:#49BE38"></i> 微信支付
+                                                                    </label> -->
+                                                                                                                                    </div>
+                                                        </div>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                        <button id="pay_submit" type="submit" class="btn btn-primary btn-pay kx-pay" data-loading-text="正在提交...">立即支付</button>
+                                                </div>
+                                        </form>
+                                </div>
+                        </div>
+                </div>
+		<style>
+			.card_collection { vertical-align: middle; display: inline-block; border: 1px solid #eee; background: #EEEEEE; padding: 0px 8px; border-radius: 5px; }
+			.card_collection p { margin-bottom: 0px;font-size: 12px;}
+			.card_collection p a { text-decoration: none; }
+			.alipay-bg { width: 60px;height: 20px;display: inline-block;vertical-align: middle;background: url(view/img/reward_alipay.png) 0 0 no-repeat;}
+		</style>
+		<div class="card" style="background:#F9F9F9;text-align:center;padding:5px 0px;">
+			<div style="width:auto;display:inline-block;">
+				<div class="card_collection" style="width: 70px; height: 65px;line-height:30px">
+					<p><b id="likes">52</b></p>
+					<p id="favorite">
+						<a href="javascript:void(0)" title="点我收藏">
+														<i class="icon-star-o"></i>&nbsp;收藏
+													</a>
+					</p>
+				</div>
+				
+				<div class="card_collection">
+					<a href="javascript:void(0);" class="modal-title" id="exampleModalLabel" data-toggle="modal" data-target=".reward"><img src="view/img/dashang.png" alt="赞赏" style="width:60px;vertical-align: middle;" title="现金赞赏支持"></a>
+				</div>
+				
+				<div class="card_collection">
+					<img src="bbs_qrcode-http_3A_2F_2Fbbs_2epediy_2ecom_2Fthread_2d174969_2ehtm.htm" alt="二维码" style="width:60px;height:60px;vertical-align: middle; ">
+				</div>
+			</div>
+		</div>
+
+		<div class="card p-1">
+			<div class="card-body">
+				<table class="table postlist mb-0">
+					<thead>
+						<tr>
+							<th colspan="2" class="pa-0  pb-1">
+								<dl class="row">
+									<dt>
+										<b>最新回复</b> (<span class="posts">43</span>)
+									</dt>
+									<dd style="text-align: right;">
+										
+										
+																				
+									</dd>
+								</dl>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+														
+				
+																			
+															
+					<tr class="post" data-pid="1196141">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-124290.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/290/124290.png?1">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2007-10 <br>
+								帖子：57 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-124290.htm">大小人物</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-7 10:56</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196141" id="1196141" class="text-grey mr-3"><span  class="floor">2</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								赞，思路清晰。拜读了 精华文~<br />
+必须好评								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196152">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-482985.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/985/482985.png?1">
+							</a>
+							<div>
+								<span class="group group-104 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2012-1 <br>
+								帖子：241 <br>-->
+
+																<a href="user-482985-1-1.htm" style="text-decoration: none;">
+									<span class="icon-diamond text-danger" title="精华数"></span><span class="font-weight-bold text-danger"> 2</span>
+								</a>
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-482985.htm">透明色</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-7 11:16</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196152" id="1196152" class="text-grey mr-3"><span  class="floor">3</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								好评 这个可以有<br />
+<br />
+51年<img src="/view/img/face/50.gif" width="24" height="24" /><img src="/view/img/face/50.gif" width="24" height="24" /><img src="/view/img/face/50.gif" width="24" height="24" /><img src="/view/img/face/50.gif" width="24" height="24" />								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196165">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-48080.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/080/48080.png?1">
+							</a>
+							<div>
+								<span class="group group-109 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2006-7 <br>
+								帖子：3077 <br>-->
+
+																<a href="user-48080-1-1.htm" style="text-decoration: none;">
+									<span class="icon-diamond text-danger" title="精华数"></span><span class="font-weight-bold text-danger"> 10</span>
+								</a>
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-48080.htm">cvcvxk</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-7 11:48</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196165" id="1196165" class="text-grey mr-3"><span  class="floor">4</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								顶，好帖。51年无法直视。								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196169">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-588581.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/581/588581.png?1">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2013-6 <br>
+								帖子：8 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-588581.htm">逍遥歪经</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-7 12:04</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196169" id="1196169" class="text-grey mr-3"><span  class="floor">5</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								<font color=""Red"">51年</font> 什么意思？								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196188">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-118994.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/994/118994.png?1">
+							</a>
+							<div>
+								<span class="group group-109 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2007-9 <br>
+								帖子：590 <br>-->
+
+																<a href="user-118994-1-1.htm" style="text-decoration: none;">
+									<span class="icon-diamond text-danger" title="精华数"></span><span class="font-weight-bold text-danger"> 12</span>
+								</a>
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-118994.htm">boywhp</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-7 13:30</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196188" id="1196188" class="text-grey mr-3"><span  class="floor">6</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								我是来mark的								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196190">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-559795.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/795/559795.png?1">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2012-12 <br>
+								帖子：695 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-559795.htm">Rookietp</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-7 13:35</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196190" id="1196190" class="text-grey mr-3"><span  class="floor">7</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								前排留名，精华文章~								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196370">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-18396.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/396/18396.png?1">
+							</a>
+							<div>
+								<span class="group group-107 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2005-1 <br>
+								帖子：776 <br>-->
+
+																<a href="user-18396-1-1.htm" style="text-decoration: none;">
+									<span class="icon-diamond text-danger" title="精华数"></span><span class="font-weight-bold text-danger"> 12</span>
+								</a>
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-18396.htm">yijun8354</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-8 04:55</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196370" id="1196370" class="text-grey mr-3"><span  class="floor">8</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								不错不错，标记哈!								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196376">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-570254.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/254/570254.png?1">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2013-3 <br>
+								帖子：12 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-570254.htm">kaykay</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-8 06:56</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196376" id="1196376" class="text-grey mr-3"><span  class="floor">9</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								mark 感谢分享								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196416">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-13783.htm" tabindex="-1">
+								<img class="avatar-3" src="view/img/avatar.png">
+							</a>
+							<div>
+								<span class="group group-103 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2004-12 <br>
+								帖子：386 <br>-->
+
+																<a href="user-13783-1-1.htm" style="text-decoration: none;">
+									<span class="icon-diamond text-danger" title="精华数"></span><span class="font-weight-bold text-danger"> 1</span>
+								</a>
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-13783.htm">lhglhg</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-8 09:13</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196416" id="1196416" class="text-grey mr-3"><span  class="floor">10</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								谢谢分享!!!								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196417">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-356233.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/233/356233.png?1">
+							</a>
+							<div>
+								<span class="group group-105 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2010-7 <br>
+								帖子：877 <br>-->
+
+																<a href="user-356233-1-1.htm" style="text-decoration: none;">
+									<span class="icon-diamond text-danger" title="精华数"></span><span class="font-weight-bold text-danger"> 4</span>
+								</a>
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-356233.htm">ycmint</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-8 09:14</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196417" id="1196417" class="text-grey mr-3"><span  class="floor">11</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								谢谢！&nbsp;&nbsp;share								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196431">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-467007.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/007/467007.png?1">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2011-11 <br>
+								帖子：481 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-467007.htm">kxzjchen</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-8 09:45</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196431" id="1196431" class="text-grey mr-3"><span  class="floor">12</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								来顶贴的，膜拜								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196456">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-315752.htm" tabindex="-1">
+								<img class="avatar-3" src="view/img/avatar.png">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2010-1 <br>
+								帖子：101 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-315752.htm">GeminiZane</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-8 10:31</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196456" id="1196456" class="text-grey mr-3"><span  class="floor">13</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								[QUOTE=逍遥歪经;1196169]<font color=""Red"">51年</font> 什么意思？[/QUOTE]<br />
+是指帖子中的:测试是一门单独的学科，这里并不严格，只想借此说明问题。这台机器上，在Key为8字节、各字节为75个可能和只计算Keystream首4字节的情况下，<font color=""Red"">单线程需要51年</font>，多线程也需要近23年<br />
+<br />
+看帖不认真..								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196471">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-446438.htm" tabindex="-1">
+								<img class="avatar-3" src="view/img/avatar.png">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2011-8 <br>
+								帖子：910 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-446438.htm">rqqeq</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-8 10:59</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196471" id="1196471" class="text-grey mr-3"><span  class="floor">14</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								[QUOTE=GeminiZane;1196456]是指帖子中的:测试是一门单独的学科，这里并不严格，只想借此说明问题。这台机器上，在Key为8字节、各字节为75个可能和只计算Keystream首4字节的情况下，<font color=""Red"">单线程需要51年</font>，多线程也需要近23年<br />
+<br />
+看帖不认真..[/QUOTE]<br />
+<br />
+使用GPU会快很多<br />
+GPU在迸发线程上是CPU无法相比的								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196570">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-522307.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/307/522307.png?1">
+							</a>
+							<div>
+								<span class="group group-106 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2012-5 <br>
+								帖子：260 <br>-->
+
+																<a href="user-522307-1-1.htm" style="text-decoration: none;">
+									<span class="icon-diamond text-danger" title="精华数"></span><span class="font-weight-bold text-danger"> 6</span>
+								</a>
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-522307.htm">MistHill</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-8 14:34</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196570" id="1196570" class="text-grey mr-3"><span  class="floor">15</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								这坑挖得好，赞<img src="/view/img/face/28.gif" width="24" height="24" />！<br />
+<br />
+找到一篇论文：<a href="http://isctae.org/paper-isctae/Chinese/v1n1-c/WB10005.pdf" target="_blank"><font color=""RoyalBlue"">基于GPU 的RC4 算法暴力破解研究(Study of Brute Force for RC4 Algorithm Based on GPU)</font></a>								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196576">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-446438.htm" tabindex="-1">
+								<img class="avatar-3" src="view/img/avatar.png">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2011-8 <br>
+								帖子：910 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-446438.htm">rqqeq</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-8 15:03</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196576" id="1196576" class="text-grey mr-3"><span  class="floor">16</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								GPU的密码学应用貌似最开始是搞heash的……								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196581">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-496796.htm" tabindex="-1">
+								<img class="avatar-3" src="view/img/avatar.png">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2012-3 <br>
+								帖子：11 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-496796.htm">ahuaHack</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-8 15:13</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196581" id="1196581" class="text-grey mr-3"><span  class="floor">17</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								可以写个GPU版的，然后加到word密码破解上来……								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196625">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-298105.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/105/298105.png?1">
+							</a>
+							<div>
+								<span class="group group-103 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2009-11 <br>
+								帖子：87 <br>-->
+
+																<a href="user-298105-1-1.htm" style="text-decoration: none;">
+									<span class="icon-diamond text-danger" title="精华数"></span><span class="font-weight-bold text-danger"> 2</span>
+								</a>
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-298105.htm">coltor</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-8 16:43</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196625" id="1196625" class="text-grey mr-3"><span  class="floor">18</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								mark,留名~								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196689">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-589564.htm" tabindex="-1">
+								<img class="avatar-3" src="view/img/avatar.png">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2013-6 <br>
+								帖子：14 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-589564.htm">ericdougle</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-8 18:35</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196689" id="1196689" class="text-grey mr-3"><span  class="floor">19</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								思路不错，支持一个								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196709">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-231176.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/176/231176.png?1">
+							</a>
+							<div>
+								<span class="group group-102 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2008-12 <br>
+								帖子：218 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-231176.htm">joker陈</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-8 19:44</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196709" id="1196709" class="text-grey mr-3"><span  class="floor">20</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								我一年无法直视？<img src="/view/img/face/50.gif" width="24" height="24" />								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196765">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-152673.htm" tabindex="-1">
+								<img class="avatar-3" src="view/img/avatar.png">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2008-1 <br>
+								帖子：163 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-152673.htm">雪中夕阳</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-8 22:33</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196765" id="1196765" class="text-grey mr-3"><span  class="floor">21</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								太厉害了，谢谢你的分享								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196783">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-75640.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/640/75640.png?1515341526">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2007-2 <br>
+								帖子：317 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-75640.htm">zhczf</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-8 23:11</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196783" id="1196783" class="text-grey mr-3"><span  class="floor">22</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								楼主是高手啊，来支持一下了								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1196837">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-459254.htm" tabindex="-1">
+								<img class="avatar-3" src="view/img/avatar.png">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2011-10 <br>
+								帖子：10 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-459254.htm">王lost</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-9 08:34</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1196837" id="1196837" class="text-grey mr-3"><span  class="floor">23</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								mark 膜拜大神~~~~								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1197038">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-235806.htm" tabindex="-1">
+								<img class="avatar-3" src="view/img/avatar.png">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2009-1 <br>
+								帖子：31 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-235806.htm">zhengcai</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-9 16:27</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1197038" id="1197038" class="text-grey mr-3"><span  class="floor">24</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								好文章,必须顶起. 感谢楼主分享								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1197699">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-191508.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/508/191508.png?1">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2008-7 <br>
+								帖子：56 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-191508.htm">lmyouya</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-7-11 10:37</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1197699" id="1197699" class="text-grey mr-3"><span  class="floor">25</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								Mark了，，慢慢看								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1226757">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-348907.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/907/348907.png?1">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2010-6 <br>
+								帖子：147 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-348907.htm">LShang</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-9-30 16:50</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1226757" id="1226757" class="text-grey mr-3"><span  class="floor">26</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								Mark一下，回头看								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1236144">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-43877.htm" tabindex="-1">
+								<img class="avatar-3" src="view/img/avatar.png">
+							</a>
+							<div>
+								<span class="group group-103 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2006-6 <br>
+								帖子：171 <br>-->
+
+																<a href="user-43877-1-1.htm" style="text-decoration: none;">
+									<span class="icon-diamond text-danger" title="精华数"></span><span class="font-weight-bold text-danger"> 1</span>
+								</a>
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-43877.htm">davidfoxhu</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-11-1 21:27</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1236144" id="1236144" class="text-grey mr-3"><span  class="floor">27</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								mark下								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1236285">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-359162.htm" tabindex="-1">
+								<img class="avatar-3" src="view/img/avatar.png">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2010-8 <br>
+								帖子：16 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-359162.htm">cff</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-11-2 15:19</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1236285" id="1236285" class="text-grey mr-3"><span  class="floor">28</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								mark～～～								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1250915">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-162924.htm" tabindex="-1">
+								<img class="avatar-3" src="view/img/avatar.png">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2008-3 <br>
+								帖子：23 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-162924.htm">rainbowf</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2013-12-29 11:47</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1250915" id="1250915" class="text-grey mr-3"><span  class="floor">29</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								学习一下!								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1252761">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-231884.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/884/231884.png?1">
+							</a>
+							<div>
+								<span class="group group-102 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2008-12 <br>
+								帖子：413 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-231884.htm">sjdkx</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2014-1-5 07:41</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1252761" id="1252761" class="text-grey mr-3"><span  class="floor">30</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								GPU的密码学应用，除非对付单纯的简单情况，在实际应用中没有什么用处，很难找到应用的机会。								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1295340">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-522307.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/307/522307.png?1">
+							</a>
+							<div>
+								<span class="group group-106 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2012-5 <br>
+								帖子：260 <br>-->
+
+																<a href="user-522307-1-1.htm" style="text-decoration: none;">
+									<span class="icon-diamond text-danger" title="精华数"></span><span class="font-weight-bold text-danger"> 6</span>
+								</a>
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-522307.htm">MistHill</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2014-6-23 15:37</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1295340" id="1295340" class="text-grey mr-3"><span  class="floor">31</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								另一个类似的游戏：“<a href="http://www.52pojie.cn/thread-266903-1-1.html" target="_blank"><font color=""RoyalBlue"">一个RC4密钥的暴力攻击实例</font></a>”								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1299545">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-74272.htm" tabindex="-1">
+								<img class="avatar-3" src="view/img/avatar.png">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2007-1 <br>
+								帖子：127 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-74272.htm">davidhee</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2014-7-9 18:11</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1299545" id="1299545" class="text-grey mr-3"><span  class="floor">32</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								不错，学习了。								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1299659">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-231884.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/884/231884.png?1">
+							</a>
+							<div>
+								<span class="group group-102 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2008-12 <br>
+								帖子：413 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-231884.htm">sjdkx</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2014-7-10 03:36</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1299659" id="1299659" class="text-grey mr-3"><span  class="floor">33</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								短东西没什么价值。								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1301991">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-249723.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/723/249723.png?1493967954">
+							</a>
+							<div>
+								<span class="group group-102 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2009-5 <br>
+								帖子：14 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-249723.htm">tewilove</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2014-7-18 20:59</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1301991" id="1301991" class="text-grey mr-3"><span  class="floor">34</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								已知初始化key之后的内部state（256字节数据），恢复key的复杂度呢？								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1302238">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-522307.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/307/522307.png?1">
+							</a>
+							<div>
+								<span class="group group-106 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2012-5 <br>
+								帖子：260 <br>-->
+
+																<a href="user-522307-1-1.htm" style="text-decoration: none;">
+									<span class="icon-diamond text-danger" title="精华数"></span><span class="font-weight-bold text-danger"> 6</span>
+								</a>
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-522307.htm">MistHill</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2014-7-20 10:34</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1302238" id="1302238" class="text-grey mr-3"><span  class="floor">35</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								没仔细去研究，简单地想想，这也是极其困难的：<br />
+这时，state序列00~FF被Key“随机”地打乱了，字节交换的index是不确定的，逆回去的每一步至少有256x255个可能，直到还原初始序列。								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1382375">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-214202.htm" tabindex="-1">
+								<img class="avatar-3" src="view/img/avatar.png">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2008-10 <br>
+								帖子：14 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-214202.htm">EvilTobe</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2015-7-21 17:04</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1382375" id="1382375" class="text-grey mr-3"><span  class="floor">36</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								楼主的学术态度很严谨，内容也很充实。学习了！！！								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1382393">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-500037.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/037/500037.png?1">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2012-3 <br>
+								帖子：31 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-500037.htm">奉先之灵</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2015-7-21 19:07</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1382393" id="1382393" class="text-grey mr-3"><span  class="floor">37</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								标记标记 有时间学习下加密算法								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1383964">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-231884.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/884/231884.png?1">
+							</a>
+							<div>
+								<span class="group group-102 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2008-12 <br>
+								帖子：413 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-231884.htm">sjdkx</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2015-7-30 10:03</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1383964" id="1383964" class="text-grey mr-3"><span  class="floor">38</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								这个穷举破解条件限制太极端。也没有看见什么好办法，不要指望用户密码只有几个字节，所以没什么意思...。								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1447278">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-231884.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/884/231884.png?1">
+							</a>
+							<div>
+								<span class="group group-102 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2008-12 <br>
+								帖子：413 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-231884.htm">sjdkx</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2016-10-7 23:19</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1447278" id="1447278" class="text-grey mr-3"><span  class="floor">39</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								解出什么来了？一个算法如果能被破解说明其有缺陷，好的算法是不可破解的，穷举攻击也没用的。								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1451013">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-735066.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/066/735066.png?1512306441">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2016-10 <br>
+								帖子：2 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-735066.htm">那片雪</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2016-10-31 21:32</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1451013" id="1451013" class="text-grey mr-3"><span  class="floor">40</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								学习了，很受用！								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1509313">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-564948.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/948/564948.png?1494492592">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2013-1 <br>
+								帖子：10 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-564948.htm">mybinboy</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2017-12-20 08:37</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1509313" id="1509313" class="text-grey mr-3"><span  class="floor">41</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								你这个跟穷举口令有什么区别？								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1523140">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-502323.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/323/502323.png?1">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2012-3 <br>
+								帖子：5 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-502323.htm">bogege</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2018-4-2 12:56</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1523140" id="1523140" class="text-grey mr-3"><span  class="floor">42</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								看看&nbsp; 不错啊！								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1528037">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-633081.htm" tabindex="-1">
+								<img class="avatar-3" src="//passport.kanxue.com/upload/avatar/081/633081.png?1">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2014-5 <br>
+								帖子：5 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-633081.htm">noida</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2018-4-30 23:11</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1528037" id="1528037" class="text-grey mr-3"><span  class="floor">43</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								Android逆向神器JEB&nbsp; Decompiler&nbsp; by&nbsp; PNFSoftware在发布升级包时使用RC4算法，论坛里确实有大牛分析出对应的decryption&nbsp; password								
+																
+								
+							</div>
+						</td>
+					</tr>
+																			
+															
+					<tr class="post" data-pid="1528319">
+						<td class="vtop td-avatar" style="width: 46px;">
+							<a href="user-213408.htm" tabindex="-1">
+								<img class="avatar-3" src="view/img/avatar.png">
+							</a>
+							<div>
+								<span class="group group-101 mr-1"></span>
+							</div>
+							<div class="text-grey text-tiny" style="text-align: center; margin-top: -4px; ">
+								
+								<!--注册：2008-10 <br>
+								帖子：19 <br>-->
+
+								
+								<!--<span class="hidden-sm hidden-md" title=""></span>
+								-->
+							</div>
+							
+							
+						</td>
+						<td class="px-0">
+							<dl class="row small">
+								<dt>
+									
+									
+									<span class="username font-weight-bold">
+										<a href="user-213408.htm">fashaoyou</a>
+									</span>
+									
+									<span class="date text-grey ml-2">2018-5-2 17:32</span>
+									
+								</dt>
+								<dd class="text-right text-grey ">
+																											
+																		
+									
+
+																	
+									
+
+	
+
+																		
+									
+																		<a href="thread-174969-1.htm#1528319" id="1528319" class="text-grey mr-3"><span  class="floor">44</span> 楼</a>
+																		
+								</dd>
+							</dl>
+							<div class="message mt-1 break-all">
+																								找到1500个数据加密得到密码大概需要多久密码长度是未知16核的机子								
+																
+								
+							</div>
+						</td>
+					</tr>
+								
+										
+											</tbody>
+				</table>
+			</div>
+		</div>
+		
+		
+				
+		
+		
+				
+				
+		<a role="button" class="btn btn-secondary btn-block xn-back my-3 mx-auto" style="max-width: 50%;" href="javascript:history.back();">返回</a>
+		
+		<br>
+		<br>
+		
+
+		
+		</div>
+
+	</main>
+
+	
+	<footer id="footer" style="background: #3b4348; color: #9ba4aa; height: auto;">
+		<div class="container">
+			<div class="row text-muted small my-3 mx-0" id="web_base_company_information">
+				<div class="col-md-6">
+					©2000-2018 看雪学院 | Based on <a href="http://bbs.xiuno.com/" target="_blank" class="text-muted">Xiuno BBS</a> <br>
+					域名：<a href="https://www.yunaq.com/" target="_blank" class="text-muted">加速乐</a> | 
+					SSL证书：<a href="https://www.trustasia.com/trustasia" target="_blank" class="text-muted">亚洲诚信</a> | 
+					<a href="http://dun.163.com/?from=kanxue_DDoS_2018&hmsr=kanxue " target="_blank" class="text-muted">安全网易云易盾</a>
+					<span class="hidden-sm"> | 公众号：ikanxue</span> 
+				</div>
+				<div class="col-md-6 text-right d-none d-md-block">
+					<a href="https://zhuanlan.kanxue.com/article-56.htm" class="text-muted">联系我们</a> | 
+					<a href="https://zhuanlan.kanxue.com/article-1.htm" class="text-muted">企业服务</a> <br>
+					Processed: <b>0.126</b>s, SQL: <b>11</b> / 京ICP备10040895号-17
+				</div>
+			</div>
+			<div style="max-height: 100px; overflow-y:auto;">
+							</div>
+		</div>
+	</footer>
+	
+
+
+	<!--[if lt IE 9]>
+	<script>window.location = 'browser.htm';</script>
+	<![endif]-->
+
+
+	
+
+	<div class="act_go_top" style="position: fixed; _position: absolute; bottom: 80px; right: 10px; width: 70px; height: 70px; display: none;">
+	<a href="javascript:void(0);" style="width: 70px; height: 70px; display: inline-block;background: url(/view/img/scroll_top.png) no-repeat; _background: url(/view/img/scroll_top.png) no-repeat; outline: none;" title="返回顶部"></a>
+	</div>
+
+</body>
+
+</html>
+<script src="lang/zh-cn/bbs.js?1.5"></script>
+<script src="view/js/jquery-3.1.0.js?1.5"></script>
+<script src="view/js/popper.js?1.5"></script>
+<script src="view/js/bootstrap.js?1.5"></script>
+<script src="view/js/xiuno.js?1.5"></script>
+<script src="view/js/bootstrap-plugin.js?1.5"></script>
+<script src="view/js/async.js?1.5"></script>
+<script src="view/js/form.js?1.5"></script>
+
+<script>
+var debug = DEBUG = 0;
+var url_rewrite_on = 1;
+var forumarr = {
+    "4": "『软件逆向』",
+    "20": "『悬赏问答』",
+    "32": "『外文翻译』",
+    "52": "OllyDbg插件收集区",
+    "69": "『经典问答』",
+    "102": "『科锐培训』",
+    "141": "CrackMe存档区",
+    "152": "学习园地",
+    "2": "『论坛版务』",
+    "53": "IDA Pro插件收集区",
+    "76": "1)珠海金山2007逆向分析挑战",
+    "99": "《加密与解密(第三版)》",
+    "169": "『15PB培训』",
+    "125": "奇虎360软件安全大赛答案提交区",
+    "128": "『智能设备』",
+    "21": "《软件加密技术内幕》",
+    "68": "2)PEDIY Crackme竞",
+    "41": "『编程技术』",
+    "79": "前沿科技",
+    "95": "《0day:软件漏洞分析技术》",
+    "160": "『麦洛科菲培训』",
+    "161": "『Android安全』",
+    "166": "『iOS安全』",
+    "88": "『加壳脱壳』",
+    "91": "3)看雪论坛2008 Explo",
+    "158": "移动平台",
+    "3": "桌面平台",
+    "120": "4)腾讯公司2008软件安全竞赛",
+    "97": "《Windows编程循序渐进》",
+    "132": "『密码算法』",
+    "123": "《微软.NET程序的加密与解密》",
+    "127": "5)奇虎360软件安全比赛",
+    "37": "『CrackMe』",
+    "140": "6)PEDIY Crackme竞",
+    "108": "企业建设",
+    "65": "『图书项目』",
+    "150": "『二进制漏洞』",
+    "163": "《C++反汇编与逆向分析技术》",
+    "10": "『工具下载』",
+    "116": "看雪CTF",
+    "155": "8)腾讯公司2010软件安全竞赛",
+    "168": "《Android安全与逆向分析》",
+    "157": "9)2011 Exploit M",
+    "121": "11）移动安全挑战赛（MSC）",
+    "129": "12）2015第2届移动安全挑战",
+    "136": "职场生活",
+    "47": "『招聘专区』",
+    "1": "站务管理/产品",
+    "137": "『职业生涯』",
+    "171": "『Pwn』",
+    "45": "『茶余饭后』",
+    "162": "『业务安全』",
+    "151": "『WEB安全』",
+    "172": "『区块链安全』"
+};
+var fid = 132;
+var uid = 0;
+var gid = 0;
+$('[data-toggle="tooltip"]').tooltip();
+$('#search_form > input').on('click', function() {
+	return false;
+});
+</script>
+
+<script src="view/js/bbs.js?1.5"></script>
+
+<script>
+// 版主管理：精华
+$('.mod-button button.digest').on('click', function() {
+	var modtid = $('input[name="modtid"]').checked();
+	if(modtid.length == 0) return $.alert(lang.please_choose_thread);
+	var radios = xn.form_radio('digest', {"0": "取消精华", "1": "关注","2": "优秀", "3": "精华"});
+	$.confirm("设置主题为精华", function() {
+		var tids = xn.implode('_', modtid);
+		var digest = $('input[name="digest"]').checked();
+		var postdata = {digest: digest};
+		$.xpost(xn.url('mod-digest-'+tids), postdata, function(code, message) {
+			if(code != 0) return $.alert(message);
+			$.alert(message).delay(1000).location('');
+		});
+	}, {'body': '<p>'+"精华等级"+'：'+radios+'</p>'});
+})
+</script><script>
+function xn_read_unread(tids, tid) {
+	
+	// 当前时间
+	var time = xn.time();
+	
+	// 多长时间内的主题为最新主题
+	var time_range = 86400 * 3;
+	
+	// 三天内的 tids
+	var recent_tids = $.pdata('recent_tids') || {};
+	
+	// 已读的 tids
+	var view_tids = $.pdata('view_tids') || {};
+	// 提取列表页的 tid
+	function fetch_recent_tids(tids) {
+		var changed = false;
+		$.each(tids, function(tid, last_date) {
+			if(time - last_date < time_range) {
+				recent_tids[tid] = last_date;
+				changed = true;
+			}
+		});
+		if(changed) $.pdata('recent_tids', recent_tids);
+	}
+	
+	// 清理最近的 tid
+	function gc_recent_tids() {
+		var changed = false;
+		$.each(recent_tids, function(tid, last_date) {
+			if(time - last_date > time_range) {
+				delete recent_tids[tid];
+				changed = true;
+			}
+		});
+		if(changed) $.pdata('recent_tids', recent_tids);
+	}
+	
+	function gc_view_tids() {
+		var changed = false;
+		$.each(view_tids, function(tid, last_date) {
+			if(!recent_tids[tid]) {
+				delete view_tids[tid];
+				changed = true;
+			}
+		});
+		if(changed) $.pdata('view_tids', view_tids);
+	}
+	
+	function save_view_tid(tid) {
+		if(!recent_tids[tid]) return;
+		view_tids[tid] = time;
+		$.pdata('view_tids', view_tids);
+	}
+	
+	if(tids) {
+		fetch_recent_tids(tids);
+		gc_recent_tids();
+		//gc_view_tids();
+	}
+	if(tid) save_view_tid(tid);
+	
+	// 三天内的主题标记为已读
+	
+	// 遍历主题列表，标记最近的，并且未读的为加粗
+
+	$('.thread').each(function() {
+		var jthis = $(this);
+		var tid = jthis.attr('tid') || jthis.data('tid');
+		if(recent_tids[tid] && recent_tids[tid] > xn.intval(view_tids[tid])) {
+			//jthis.find('div.subject').addClass('font-weight-bold');
+			jthis.find('div.subject').append('<span class="icon-new"></span>');
+			jthis.find('span.icon-post-grey').removeClass('icon-post-grey').addClass('icon-post-blue');
+		}
+	});
+}
+
+</script>
+
+<script type="text/javascript">
+$(function() {
+	setTimeout(function() {
+		$.require('https://www.google-analytics.com/ga.js', function() {
+			try {
+				var pageTracker = _gat._getTracker("UA-9784446-1");
+				pageTracker._trackPageview();
+			} catch (err) {}
+		});
+	}, 1000);
+
+	setTimeout(function() {
+		$(".bbs_home_page_three_col .small_logo").each(function(index, element) {
+
+			if ($(element).children("a").length == 0) {
+				$(".bbs_home_page_three_col .bbs_home_page_row_div").eq(index).children('div:first-child').removeClass("col-lg-8").addClass("col-lg-9");
+				$(".bbs_home_page_three_col .bbs_home_page_row_div").eq(index).children('div:last-child').removeClass("col-lg-4").addClass("col-lg-3");
+				$(".bbs_home_page_three_col .bbs_home_page_row_div").eq(index).children('div:first-child').children("span").css("width", "19rem");
+			}
+		})
+	}, 2000);
+
+
+	if (self != top) {
+		$('#header').hide();
+		$('#nav2').hide();
+		$('#footer').hide();
+	}
+	// 返回顶部
+	$(window).scroll(function() {
+		if ($(window).scrollTop() >= 500) {
+			$('.act_go_top').fadeIn(300);
+		} else {
+			$('.act_go_top').fadeOut(300);
+		}
+	});
+
+	$('.act_go_top').click(function() {
+		$('html,body').animate({
+			scrollTop: '0px'
+		}, 100);
+	});
+	var m1 = 0;     // 滚动的值
+	var m2 = 0;     // 对比时间的值
+	var timer = null;
+	document.onscroll = function() {
+		clearTimeout(timer) // 每次滚动前 清除一次
+		timer = setTimeout(Data, 2000);
+		m1 = document.documentElement.scrollTop || document.body.scrollTop;
+
+	}
+	function Data() {
+		m2 = document.documentElement.scrollTop || document.body.scrollTop;
+		if(m2 == m1){
+		    $('.act_go_top').fadeOut(300);
+		}
+	}
+
+});
+
+
+</script>
+
+<script>
+(function() {
+	var islogin = '';
+	if(islogin == 0)  return; 
+	var pm_number = "//www.kanxue.com/pm-new.htm";
+	$.xget(pm_number, function(code, message) {
+		var pm_number = $(".pm_number");
+		var sysm_number = $(".system_message_number");
+		if (code == 0) {
+			var newpms = parseInt(message.newpms);
+			var system_pms = parseInt(message.system_pms);
+			var pm_total = newpms + system_pms;
+			if (pm_total != 0) {
+				pm_total = pm_total > 99 ? "99+" : pm_total;
+				$(".pm_total").html(pm_total);
+				// $(".pm_total").css({
+				// 	"display": "inline-block",
+				// 	"padding": "0px 7px",
+				// 	"font-size": "12px",
+				// 	"line-height": "20px",
+				// 	"color": "white",
+				// 	"background-color": "#f57e42",
+				// 	"border-radius": "9px",
+				// 	"text-indent": "0px"
+				// });
+
+				if (system_pms > 0 && newpms == 0) {
+					var href = "//www.kanxue.com/pm-system_read-1.htm";
+					$(".pm_total_a").attr("href", href);
+				}
+
+			} else {
+				// $(".pm_total_a").css("display","none");
+			};
+			if (message.newpms != 0) {
+				pm_number.html(message.newpms);
+				pm_number.addClass("pmmessage_number");
+			} else {
+				pm_number.css("display", "none");
+			};
+			if (message.system_pms != 0) {
+				sysm_number.html(message.system_pms);
+				sysm_number.addClass("pmmessage_number");
+			} else {
+				sysm_number.css("display", "none");
+			};
+			if (message.newpms != 0) {
+				pm_number.html(message.newpms);
+				pm_number.addClass("pm_numbers_");
+			} else {
+				pm_number.css("display", "none");
+			};
+			if (message.system_pms != 0) {
+				sysm_number.html(message.system_pms);
+				sysm_number.addClass("pm_numbers_");
+			} else {
+				sysm_number.css("display", "none");
+			};
+
+
+		} else {
+			// $(".pm_total").css({
+			// 	"display": "inline-block",
+			// 	"padding": "0px 3px",
+			// 	"font-size": "12px",
+			// 	"line-height": "20px",
+			// 	"color": "white",
+			// 	"background-color": "#f57e42",
+			// 	"border-radius": "9px",
+			// 	"text-indent": "0px"
+			// });
+			pm_number.css("display", "none");
+			sysm_number.css("display", "none");
+
+		}
+	})
+
+})(jQuery);
+</script>
+
+<script>
+
+var forumlist = [
+    {
+        "fid": "4",
+        "fup": "3",
+        "name": "『软件逆向』",
+        "rank": "29"
+    },
+    {
+        "fid": "20",
+        "fup": "152",
+        "name": "『悬赏问答』",
+        "rank": "29"
+    },
+    {
+        "fid": "29",
+        "fup": "2",
+        "name": "『论坛管理团队』",
+        "rank": "29"
+    },
+    {
+        "fid": "32",
+        "fup": "152",
+        "name": "『外文翻译』",
+        "rank": "29"
+    },
+    {
+        "fid": "52",
+        "fup": "10",
+        "name": "OllyDbg插件收集区",
+        "rank": "29"
+    },
+    {
+        "fid": "69",
+        "fup": "20",
+        "name": "『经典问答』",
+        "rank": "29"
+    },
+    {
+        "fid": "122",
+        "fup": "37",
+        "name": "CTF2018提交区(隐藏版块)",
+        "rank": "29"
+    },
+    {
+        "fid": "102",
+        "fup": "137",
+        "name": "『科锐培训』",
+        "rank": "29"
+    },
+    {
+        "fid": "141",
+        "fup": "140",
+        "name": "CrackMe存档区",
+        "rank": "29"
+    },
+    {
+        "fid": "152",
+        "fup": "0",
+        "name": "学习园地",
+        "rank": "29"
+    },
+    {
+        "fid": "2",
+        "fup": "1",
+        "name": "『论坛版务』",
+        "rank": "28"
+    },
+    {
+        "fid": "53",
+        "fup": "10",
+        "name": "IDA Pro插件收集区",
+        "rank": "28"
+    },
+    {
+        "fid": "76",
+        "fup": "37",
+        "name": "1)珠海金山2007逆向分析挑战",
+        "rank": "28"
+    },
+    {
+        "fid": "99",
+        "fup": "65",
+        "name": "《加密与解密(第三版)》",
+        "rank": "28"
+    },
+    {
+        "fid": "169",
+        "fup": "137",
+        "name": "『15PB培训』",
+        "rank": "28"
+    },
+    {
+        "fid": "125",
+        "fup": "127",
+        "name": "奇虎360软件安全大赛答案提交区",
+        "rank": "28"
+    },
+    {
+        "fid": "128",
+        "fup": "79",
+        "name": "『智能设备』",
+        "rank": "27"
+    },
+    {
+        "fid": "21",
+        "fup": "65",
+        "name": "《软件加密技术内幕》",
+        "rank": "27"
+    },
+    {
+        "fid": "68",
+        "fup": "37",
+        "name": "2)PEDIY Crackme竞",
+        "rank": "27"
+    },
+    {
+        "fid": "41",
+        "fup": "3",
+        "name": "『编程技术』",
+        "rank": "27"
+    },
+    {
+        "fid": "79",
+        "fup": "0",
+        "name": "前沿科技",
+        "rank": "27"
+    },
+    {
+        "fid": "78",
+        "fup": "2",
+        "name": "『申请提交区』",
+        "rank": "27"
+    },
+    {
+        "fid": "95",
+        "fup": "65",
+        "name": "《0day:软件漏洞分析技术》",
+        "rank": "27"
+    },
+    {
+        "fid": "160",
+        "fup": "137",
+        "name": "『麦洛科菲培训』",
+        "rank": "27"
+    },
+    {
+        "fid": "161",
+        "fup": "158",
+        "name": "『Android安全』",
+        "rank": "27"
+    },
+    {
+        "fid": "166",
+        "fup": "158",
+        "name": "『iOS安全』",
+        "rank": "27"
+    },
+    {
+        "fid": "88",
+        "fup": "3",
+        "name": "『加壳脱壳』",
+        "rank": "26"
+    },
+    {
+        "fid": "91",
+        "fup": "37",
+        "name": "3)看雪论坛2008 Explo",
+        "rank": "26"
+    },
+    {
+        "fid": "158",
+        "fup": "0",
+        "name": "移动平台",
+        "rank": "26"
+    },
+    {
+        "fid": "3",
+        "fup": "0",
+        "name": "桌面平台",
+        "rank": "25"
+    },
+    {
+        "fid": "120",
+        "fup": "37",
+        "name": "4)腾讯公司2008软件安全竞赛",
+        "rank": "25"
+    },
+    {
+        "fid": "57",
+        "fup": "2",
+        "name": "『回收站』",
+        "rank": "25"
+    },
+    {
+        "fid": "97",
+        "fup": "65",
+        "name": "《Windows编程循序渐进》",
+        "rank": "25"
+    },
+    {
+        "fid": "132",
+        "fup": "3",
+        "name": "『密码算法』",
+        "rank": "24"
+    },
+    {
+        "fid": "123",
+        "fup": "65",
+        "name": "《微软.NET程序的加密与解密》",
+        "rank": "24"
+    },
+    {
+        "fid": "127",
+        "fup": "37",
+        "name": "5)奇虎360软件安全比赛",
+        "rank": "24"
+    },
+    {
+        "fid": "37",
+        "fup": "116",
+        "name": "『CrackMe』",
+        "rank": "23"
+    },
+    {
+        "fid": "140",
+        "fup": "37",
+        "name": "6)PEDIY Crackme竞",
+        "rank": "23"
+    },
+    {
+        "fid": "108",
+        "fup": "0",
+        "name": "企业建设",
+        "rank": "22"
+    },
+    {
+        "fid": "65",
+        "fup": "1",
+        "name": "『图书项目』",
+        "rank": "22"
+    },
+    {
+        "fid": "150",
+        "fup": "3",
+        "name": "『二进制漏洞』",
+        "rank": "22"
+    },
+    {
+        "fid": "163",
+        "fup": "65",
+        "name": "《C++反汇编与逆向分析技术》",
+        "rank": "22"
+    },
+    {
+        "fid": "10",
+        "fup": "3",
+        "name": "『工具下载』",
+        "rank": "21"
+    },
+    {
+        "fid": "116",
+        "fup": "0",
+        "name": "看雪CTF",
+        "rank": "21"
+    },
+    {
+        "fid": "155",
+        "fup": "37",
+        "name": "8)腾讯公司2010软件安全竞赛",
+        "rank": "21"
+    },
+    {
+        "fid": "168",
+        "fup": "65",
+        "name": "《Android安全与逆向分析》",
+        "rank": "21"
+    },
+    {
+        "fid": "157",
+        "fup": "37",
+        "name": "9)2011 Exploit M",
+        "rank": "20"
+    },
+    {
+        "fid": "121",
+        "fup": "37",
+        "name": "11）移动安全挑战赛（MSC）",
+        "rank": "18"
+    },
+    {
+        "fid": "129",
+        "fup": "37",
+        "name": "12）2015第2届移动安全挑战",
+        "rank": "17"
+    },
+    {
+        "fid": "136",
+        "fup": "0",
+        "name": "职场生活",
+        "rank": "12"
+    },
+    {
+        "fid": "47",
+        "fup": "136",
+        "name": "『招聘专区』",
+        "rank": "4"
+    },
+    {
+        "fid": "1",
+        "fup": "0",
+        "name": "站务管理/产品",
+        "rank": "3"
+    },
+    {
+        "fid": "137",
+        "fup": "136",
+        "name": "『职业生涯』",
+        "rank": "3"
+    },
+    {
+        "fid": "171",
+        "fup": "116",
+        "name": "『Pwn』",
+        "rank": "2"
+    },
+    {
+        "fid": "45",
+        "fup": "136",
+        "name": "『茶余饭后』",
+        "rank": "2"
+    },
+    {
+        "fid": "162",
+        "fup": "108",
+        "name": "『业务安全』",
+        "rank": "2"
+    },
+    {
+        "fid": "170",
+        "fup": "57",
+        "name": "看雪产品",
+        "rank": "2"
+    },
+    {
+        "fid": "64",
+        "fup": "136",
+        "name": "『会员专区』",
+        "rank": "1"
+    },
+    {
+        "fid": "151",
+        "fup": "108",
+        "name": "『WEB安全』",
+        "rank": "1"
+    },
+    {
+        "fid": "172",
+        "fup": "79",
+        "name": "『区块链安全』",
+        "rank": "0"
+    }
+];
+
+// 三级版块
+function forum_tree(forumlist, template) {
+	var template = template || '<option value="{fid}">{tab}{name}</option>'+"\r\n";
+	var s = '';
+	var forumlist1 = forumlist.filter(function(v) {return v.fup == 0});
+	for(var i1=0; i1<forumlist1.length; i1++) {
+		var v1 = forumlist1[i1];
+		s += '►'+xn.template(template, {fid: v1.fid, name: v1.name, tab: "　"});
+		var forumlist2 = forumlist.filter(function(v2) {return v2.fup == v1.fid});
+		for(var i2=0; i2<forumlist2.length; i2++) {
+			var v2 = forumlist2[i2];
+			s += xn.template(template, {fid: v2.fid, name: v2.name, tab: "　　"});
+			var forumlist3 = forumlist.filter(function(v3) {return v3.fup == v2.fid});
+			for(var i3=0; i3<forumlist3.length; i3++) {
+				var v3 = forumlist3[i3];
+				s += xn.template(template, {fid: v3.fid, name: v3.name, tab: "　　　　"});
+			}
+
+		}
+	}
+	return s;
+}
+
+
+// 版主管理：移动 / moderator : move
+$('.mod-button button.move').off('click').on('click', function() {
+	var modtid = $('input[name="modtid"]').checked();
+	if(modtid.length == 0) return $.alert(lang.please_choose_thread);
+	var select = '<select name="fid">'+forum_tree(forumlist)+'</select>';
+	$.confirm(lang.move_forum, function() {
+		var tids = xn.implode('_', modtid);
+		var newfid = $('select[name="fid"]').val();
+		$.xpost(xn.url('mod-move-'+tids+'-'+newfid), function(code, message) {
+			if(code != 0) return $.alert(message);
+			$.alert(message).delay(1000).location('');
+		});
+	}, {'body': '<p>'+lang.choose_move_forum+'：'+select+'</p>'});
+})
+
+</script><script>
+
+// 版主管理：审核
+$('.mod-button button.audit').on('click', function() {
+	var modtid = $('input[name="modtid"]').checked();
+	if(modtid.length == 0) return $.alert(lang.please_choose_thread);
+	var radios = xn.form_radio('audit', {"1": "审核通过", "2": "审核不通过"});
+	$.confirm('审核主题', function() {
+		var tids = xn.implode('_', modtid);
+		var audit = $('input[name="audit"]').checked();
+		var postdata = {audit: audit};
+		$.xpost(xn.url('mod-audit-'+tids), postdata, function(code, message) {
+			if(code != 0) return $.alert(message);
+			$.alert(message).delay(1000).location('');
+		});
+	}, {'body': '<p>'+'审核选项'+'：'+radios+'</p>'});
+})
+
+</script>
+<script>
+
+$(function() {
+	// 版主管理：删除 / moderator : delete
+	$('.mod-button button.delete').off('click').on('click', function() {
+		var modtid = $('input[name="modtid"]').checked();
+		if(modtid.length == 0) return $.alert(lang.please_choose_thread);
+		var radios = '';
+				//var htmladd = '<br><br><label class="text-small"><input type="checkbox" name="logic" value="0" /> 物理删除</label>';
+		//htmladd += '<br><label class="text-small"><input type="checkbox" name="logic" value="0" /> 恢复删除</label>';
+		$.confirm(xn.lang('confirm_delete_thread', {n:modtid.length}) + '<br><br>'+radios, function() {
+			var tids = xn.implode('_', modtid);
+			var type = $('input[name="type"]').checked();
+			$.xpost(xn.url('mod-delete-'+tids), {type: type}, function(code, message) {
+				if(code != 0) return $.alert(message);
+				$.alert(message).delay(1000).location('');
+			});
+		});
+	})
+
+	// 恢复逻辑删除的帖子
+	$('body').on('click', '.post_recover', function() {
+		var jthis = $(this);
+		var href = jthis.data('href');
+		var isfirst = jthis.attr('isfirst');
+		if(window.confirm('确定恢复删除的帖子？')) {
+			$.xpost(href, function(code, message) {
+				var isfirst = jthis.attr('isfirst');
+				if(code == 0) {
+					if(isfirst == '1') {
+						$.location('forum-132.htm');
+					} else {
+						window.location.reload();
+					}
+				} else {
+					$.alert(message);
+				}
+			});
+		}
+		return false;
+	});
+
+})
+
+</script>
+
+<div class="modal fade appeal" id="appeal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                        <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="exampleModalLabel">求助问答申诉</h4>
+                        </div>
+                        <form id="form_appeal" action="post-appeal.htm" method="post">
+	                        <div class="modal-body">
+	                                <div class="form-group">
+	                                	<input id="pid" name="pid" value="0" type="hidden">
+	                                        <textarea class="form-control" id="brief" name="brief" rows="6" placeholder="请填写内容，注意: 请写明申诉的原因"></textarea>
+	                                </div>
+	                        </div>
+	                        <div class="modal-footer">
+	                                <button id="appeal_submit" type="button" class="btn btn-primary" data-loading-text="正在提交...">申请提交</button>
+	                        </div>
+	                </form>
+                </div>
+        </div>
+</div><div class="modal fade report" id="report" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                        <div class="modal-header">
+                       
+                        <h4 class="modal-title" id="exampleModalLabel">举报此帖</h4>
+                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <form id="form_report" action="post-report.htm" method="post">
+                                <div class="modal-body">
+                                        <div class="form-group">
+                                                <input id="tid" name="tid" value="0" type="hidden">
+                                                <input id="pid" name="pid" value="0" type="hidden">
+                                                <textarea class="form-control" id="brief" name="brief" rows="6" placeholder="请填写内容，注意: 请确认您所举报此帖的内容涉及到语言挑衅和违犯论坛版规的内容， 版主将收到举报后审核该帖！"></textarea>
+                                        </div>
+                                </div>
+                                <div class="modal-footer">
+                                        <button id="report_submit" type="button" class="btn btn-primary" data-loading-text="正在提交...">发送报告</button>
+                                </div>
+                        </form>
+                </div>
+        </div>
+</div>
+
+<script src="view/js/face.js?1.5"></script>
+
+<script>
+$(function() {
+	var jform = $('#quick_reply_form');
+	var jsubmit = $('#submit');
+	jform.on('submit', function() {
+		jform.reset();
+		jsubmit.button('loading');
+		var postdata = jform.serialize();
+		$.xpost(jform.attr('action'), postdata, function(code, message) {
+			if (code == 0) {
+				var s = '<table>' + message + '</table>';
+				var jtr = $(s).find('tr');
+				jtr.insertBefore($('table.postlist tr').last());
+				jsubmit.button('reset');
+				$('#message').val('');
+
+				// 楼层 +1
+				var jfloor = jform.find('.floor');
+				jfloor.html(xn.intval(jfloor.html()) + 1);
+
+				// 回复数 +1
+				var jposts = $('.posts');
+				jposts.html(xn.intval(jposts.html()) + 1);
+
+			} else if (code < 0) {
+				$.alert(message);
+				jsubmit.button('reset');
+			} else {
+				jform.find('[name="' + code + '"]').alert(message).focus();
+				jsubmit.button('reset');
+			}
+		});
+		return false;
+	});
+
+
+	//收藏功能
+	var jfavorite = $('#favorite');
+	var jlikes = $('#likes');
+   
+	jfavorite.on('click', function() {
+		var likenum = jlikes.text();
+		likenum_plus = parseInt(likenum) + 1;
+		likenum_sub = parseInt(likenum) - 1;
+		if(likenum_sub < 0) likenum_sub = 0;
+		$.xpost('thread-favorite-174969.htm', function(code, message) {
+			if(code == 0) {
+				var s = '<a href="javascript:void(0)" title="取消收藏"><i class="icon-star"></i>&nbsp;已收藏</a>';
+				jfavorite.html(s);
+				jlikes.text(likenum_plus);
+
+			}else if(code == 1) {
+				var s = '<a href="javascript:void(0)" title="点我收藏"><i class="icon-star-o"></i>&nbsp;收藏</a>';
+				jfavorite.html(s);
+				jlikes.text(likenum_sub);
+			} else {
+				$.alert(message);
+			}
+		});
+		return false;
+	});
+	// 缩放图片，适应屏幕大小。
+	function resize_image() {
+		var jmessagelist = $('div.message');
+		var first_width = jmessagelist.width(); // 815 : 746; //  734 746
+		jmessagelist.each(function() {
+			var jdiv = $(this);
+			var maxwidth = jdiv.attr('isfirst') ? first_width : first_width - 79; //  734 746
+			var jmessage_width = Math.min(jdiv.width(), maxwidth);
+			jdiv.find('img, embed, iframe').each(function() {
+				var jimg = $(this);
+				//if(jimg.width() < 500) return;
+				var img_width = this.org_width;
+				var img_height = this.org_height;
+				if (!img_width) {
+					var img_width = jimg.width();
+					var img_height = jimg.height();
+					this.org_width = img_width;
+					this.org_height = img_height;
+				}
+				//var percent = xn.min(100, xn.ceil((img_width / jmessage_width) * 100));
+				if (img_width > jmessage_width) {
+					if (this.tagName == 'IMG') {
+						jimg.width(jmessage_width);
+						jimg.css('height', 'auto');
+					} else {
+						jimg.width(jmessage_width);
+						var height = (img_height / img_width) * jimg.width();
+						jimg.height(height);
+					}
+				}
+
+			});
+			
+			jdiv.find('p').each(function() {
+				var jp = $(this);
+				if($.trim(jp.text()) == '') {
+					jp.css('line-height', '1');
+				}
+			});
+		});
+	}
+	resize_image();
+	$(window).on('resize', resize_image);
+ 	//---------by wang start------------------------//
+	//取出tr的pid，赋值给tr使name为point_pid
+	// $(".post").each(function() {
+	// 	var cpid = $(this).attr("pid");
+	// 	$(this).attr("id","point_"+ cpid);
+	// });
+	var url = window.location.toString();
+	
+	if(url.indexOf("#") != -1){
+		var cpid = url.split("#")[1];
+		if(cpid) {
+			$(".post").each(function(k,v) {
+				if($(v).attr("pid") == cpid) {
+					var t = $(this).offset() ? $(this).offset().top : 0;
+					//$("#frame_right").scrollTop(t);
+					$("html,body").animate({scrollTop:t},800)
+				}
+				
+			});
+			
+		}
+	}
+	
+	//------------by wang end----------------------------//
+
+
+	
+	// 输入框自动伸缩
+	var jmessage = $('#message');
+	jmessage.on('focus', function() {
+		if (jmessage.t) {
+			clearTimeout(jmessage.t);
+			jmessage.t = null;
+		}
+		jmessage.css('height', '6rem');
+	});
+	jmessage.on('blur', function() {
+		jmessage.t = setTimeout(function() {
+			jmessage.css('height', '2.5rem');
+		}, 1000);
+	});
+
+	$('#nav_pc li[fid="132"]').addClass('active');
+	$('#nav_mobile li[fid="132"]').addClass('active');
+
+	 $(function(){
+		$('.emotion').qqFace({
+			id : 'facebox',
+			assign:'message',
+			path:'view/img/face/'
+		});
+	});
+
+	$("div.message img").css("cursor","pointer");
+	$("div.message img").on("click",function() {
+		if (window.innerWidth > 768) {
+			var img_src = $(this).attr("src");
+			window.open(img_src);
+		}
+	})
+	setTimeout(function() {
+		$("div.message img").each(function(index, element) {
+			if ($(element).width() >= 100) {
+				$(element).addClass("div_message_boxShadow");
+			}
+		})
+	}, 2000);
+});
+</script>
+
+<script>
+var jpay_form = $('#pay_kx');
+var jkxpay = $('.kx-pay');
+var rid = 0;
+var check_handle = null;
+
+function topay(){
+    clearInterval(check_handle);
+    check_handle = null;
+    var valtype = $("input[name='reward_type']:checked").val();
+    var rmbstype = $("input[name='reward_rmbs']:checked").val();
+    if(!valtype) { alert('请您选择一个支付方式!'); return false; }
+    if(rmbstype < 1){
+        alert("好扣哦，打赏金额不能少于1元");
+        return false;
+    }else if(valtype == 1){
+        if(_is_weixin) {
+            $.alert('请用其它浏览器打开再用赞赏功能!');
+            return false;
+        }
+        window.Popup = window.open('about:blank', '_blank','width='+window.screen.width+',height='+window.screen.height+', ...');
+        var ptdata = jpay_form.serialize();
+        jkxpay.button('loading');
+        $.xpost('reward_pay-charge.htm', ptdata, function(code, message) {
+            if(code == 0) {
+                Popup.blur();
+                Popup.opener.focus();
+                Popup.location = 'reward_pay-reward_alipay-'+ message +'.htm';
+                jkxpay.button('reset');
+                $('.reward').modal('hide');
+                check_setInterval(message);
+            } else if(code < 0) {
+                Popup.close();
+                alert(message);
+                jkxpay.button('reset');
+            } else {
+                Popup.close();
+                alert(message);
+                jkxpay.button('reset');
+            }
+        });
+        return false;
+    }else if(valtype == 2){
+        var postdata = jpay_form.serialize();
+        jkxpay.button('loading');
+        $.xpost('reward_pay-reward_remainder.htm', postdata, function(code, message) {
+            if(code == 0) {
+                $.alert(message);
+                jkxpay.button('reset');
+                $('.reward').modal('hide');
+                window.location.reload();
+            } else if(code < 0) {
+               $.alert(message);
+                jkxpay.button('reset');
+            } else {
+                $.alert(message);
+                jkxpay.button('reset');
+            }
+        });
+        return false;
+    }else{
+        $('.reward').modal('hide');
+        return false;
+    }
+}
+
+function check_status(rid) {
+  $.xpost('reward_pay-check.htm', {checkid: rid}, function(code, message) {
+    if(code == 0) {
+      Popup.close();
+      $.alert('恭喜您，赞赏成功！');
+      setTimeout(function() {
+                 window.location.reload();
+      }, 3000);
+      // if(check_handle) {
+        clearInterval(check_handle);
+        check_handle = null;
+      // }
+    } else {
+      return false;
+    }
+  });
+}
+
+function check_setInterval(rid) {
+  check_handle = setInterval(function() {
+    check_status(rid);
+  }, 3000);
+}
+
+window._is_weixin = function() {
+  var _ua = window.navigator.userAgent.toLowerCase();
+  if (_ua.match(/MicroMessenger/i) == 'micromessenger') {
+      return true;
+  } else {
+      return false;
+  }
+}()
+
+</script><script>
+var jform_appeal = $('#form_appeal');
+var appeal_submit = $('#appeal_submit');
+
+appeal_submit.on('click', function() {
+    jform_appeal.reset();
+    appeal_submit.button('loading');
+    var postdata = jform_appeal.serialize();
+    
+    $.xpost(jform_appeal.attr('action'), postdata, function(code, message) {
+        if(code == 0) {
+       	$.alert(message);
+       	appeal_submit.button('reset');
+       	setTimeout(function(){window.location.reload();
+            }, 2000);
+        } else {
+    	$.alert(message);
+    	appeal_submit.button('reset');
+        }
+    });
+    return false;
+});
+
+ $('#appeal').on('show.bs.modal', function (event) {
+	var button = $(event.relatedTarget)
+	var pid = button.data('pid');
+	var modal = $(this);
+	modal.find('.modal-body #pid').val(pid);
+
+})
+</script><script>
+
+var jform_report = $('#form_report');
+var report_submit = $('#report_submit');
+
+report_submit.on('click', function() {
+    jform_report.reset();
+    report_submit.button('loading');
+    var postdata = jform_report.serialize();
+    
+    $.xpost(jform_report.attr('action'), postdata, function(code, message) {
+        if(code == 0) {
+       	$.alert(message);
+       	report_submit.button('reset');
+       	setTimeout(function(){window.location.reload();
+            }, 1000);
+        } else {
+    	$.alert(message);
+    	report_submit.button('reset');
+        }
+    });
+    return false;
+});
+
+$('#report').on('show.bs.modal', function (event) {
+	var button = $(event.relatedTarget)
+    var tid = button.data('tid');
+    var pid = button.data('pid');
+    var modal = $(this);
+
+    modal.find('.modal-body #tid').val(tid);
+    modal.find('.modal-body #pid').val(pid);
+})
+
+</script><!--游客下载附件关注微信公众号-->
+<div class="modal fade download_code" id="download_code" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                        <div class="modal-header">
+	                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                                <span aria-hidden="true">&times;</span>
+	                        </button>
+	                        <h5 class="modal-title" id="exampleModalLabel">游客下载提示</h5>
+                        </div>
+                        <form id="form_download" action="" method="post" target="_blank">
+                                <div class="modal-body text-center">
+                                    <input id="aid" name="aid" value="0" type="hidden">
+                                    <dl class="row">
+                                    	<dd class="text-left" style="width:50%">
+                                        	<div style="font-size:14px">
+                                        		<div>1.请先关注公众号。</div>
+                                        		<div>2.点击菜单"更多"。</div>
+                                        		<div>3.选择获取下载码。</div>
+                                        	</div>
+                                    	</dd>
+                                    	<dt><img src="view/img/wxgz.jpg" width="80%"></dt>
+                                    </dl>
+                                    <fieldset class="form-group">
+                						<input class="form-control" type="text" id="download_code" name="download_code" placeholder="请输入下载码" value="" />
+                					</fieldset>
+                                </div>
+                                <div class="modal-footer">
+                                        <button id="download_submit" type="button" class="btn btn-primary" data-loading-text="正在提交...">下载</button>
+                                </div>
+                        </form>
+                </div>
+        </div>
+</div>
+
+<script>
+
+var jform_download = $('#form_download');
+var jdownload_submit = $('#download_submit');
+
+jdownload_submit.on('click', function() {
+    jform_download.reset();
+    jdownload_submit.button('loading');
+    var postdata = jform_download.serialize();
+
+    var aid2 = jform_download.find('.modal-body #aid').val();
+    
+    $.xpost(jform_download.attr('action'), postdata, function(code, message) {
+        if(code == 0) {
+	       	jdownload_submit.button('下载中...');
+	       	var href = "attach-download-"+aid2+"-"+message+".htm";
+		window.location = href;
+		setTimeout(function() {
+                    jdownload_submit.button('reset');
+                    jform_download.find('.modal-body #download_code').val('');
+                }, 1500);
+		
+        } else {
+	    	$.alert(message);
+	    	jdownload_submit.button('reset');
+        }
+    });
+    return false;
+});
+
+$('#download_code').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget)
+    var aid = button.data('aid');
+    var modal = $(this);
+    var down_action="attach-download_code-"+aid+".htm";
+
+    modal.find('.modal-body #aid').val(aid);
+    modal.find('#form_download').attr('action', down_action);
+})
+
+</script><script>
+xn_read_unread({"174969": "1525253559"}, 174969);
+</script><script>
+jsearch_form = $('#search_form');
+jsearch_form.on('submit', function() {
+	var keyword = jsearch_form.find('input[name="keyword"]').val();
+	var url = xn.url('search-'+xn.urlencode(keyword));
+	window.location = url;
+	return false;
+});
+</script><script>
+// 语法高亮
+if($('div.message pre').length > 0) {
+	$.require_css('plugin/xn_syntax_hightlighter/syntax_hightlighter/syntax.css');
+	$.require('plugin/xn_syntax_hightlighter/syntax_hightlighter/syntax.js', function() {
+		SyntaxHighlighter.all();
+	});
+}
+</script>

@@ -19,13 +19,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -81,7 +81,11 @@
   <ItemGroup>
     <ClInclude Include="rc4.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StringCodecConverter.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TestRc4.h" />
+    <ClInclude Include="TestUtf8.h" />
+    <ClInclude Include="UTF8.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CodecUtils.cpp" />
@@ -90,6 +94,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="StringCodecConverter.cpp" />
+    <ClCompile Include="TestRc4.cpp" />
+    <ClCompile Include="TestUtf8.cpp" />
+    <ClCompile Include="UTF8.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

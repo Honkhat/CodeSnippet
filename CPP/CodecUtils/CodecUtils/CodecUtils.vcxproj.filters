@@ -27,6 +27,18 @@
     <ClInclude Include="rc4.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="TestRc4.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UTF8.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="StringCodecConverter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TestUtf8.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -36,6 +48,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="rc4.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TestRc4.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UTF8.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="StringCodecConverter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TestUtf8.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -6,7 +6,7 @@
 	@Date: 2018/09/07 11:35;
 	@Author: jian.he;
 	@Mail: worksdata@163.com;
-	@Purpose: Simple,Fast Encryption/Decryption Algorithm;
+	@Purpose: Simple,Fast Encryption/Decryption Algorithm Implementation;
 */
 
 
@@ -50,8 +50,23 @@ namespace CodecUtils
 		RC4();
 		~RC4();
 
+		//接口设计目标: 外部只需调用一个方法即可完成任务;
+		bool Crypt(unsigned char* data, int datalen, const char* key, int keylen);//字符串加解密;
+		bool Crypt(unsigned char* srcData, unsigned char*& dstData, int datalen, const char* key, int keylen);//字符串加解密;
+		bool Crypt(const char* file, const char* key, int keylen);//文件加解密;
+		bool Crypt(const char* srcFile, const char* dstFile, const char* key, int keylen);//文件加解密;
 
 	private:
-		unsigned char* m_S;
+		void swap(unsigned char& a, unsigned char& b);
+		void rc4_init(unsigned char*s, unsigned char* szKey, unsigned long iKeyLen);
+		void rc4_crypt(unsigned char*s, unsigned char*Data, unsigned long Len);
+		void copy_sbox();
+		unsigned char* GetResultBuffer(int iBuffSize);
+
+		unsigned char* m_S;//不可修改;
+		unsigned char* m_SCopy;//可修改;
+		unsigned char* m_pResult;//结果序列;
+		int m_iResultSize;
+		std::string m_sKeyRc4;
 	};
 }
