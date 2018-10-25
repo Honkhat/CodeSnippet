@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+
+<Window size="800,600" caption="0,0,0,40" mininfo="40,30" roundcorner="10,10" bktrans="false" gdiplustext="true"> <!--不设置maxinfo就可以最大化了;maxinfo="1200,900"-->
+	<Include source="MyStyle.xml"/>
+	<Default shared="true" name="Button" value="textcolor=&quot;#000000&quot; hottextcolor=&quot;#FFFFFF&quot; focusedtextcolor=&quot;#000000&quot; pushedtextcolor=&quot;#77a8de&quot; normalimage=&quot;file='btnMy.png' corner='5,11,5,11' source='0,0,96,24'&quot; hotimage=&quot;file='btnMy.png' corner='5,11,5,11' source='0,24,96,48'&quot; pushedimage=&quot;file='btnMy.png' corner='5,11,5,11' source='0,48,96,72'&quot; disabledimage=&quot;file='btnMy.png' corner='5,11,5,11' source='0,72,96,96'&quot;" />
+	
+	<VerticalLayout name="bg" bkcolor="#FF9AC0CD">
+		<HorizontalLayout height="40" name="caption">
+			<Label name="txtCap" text="DuiLib Demo Wnd" font="50" float="false" width="450" padding="6,6,0,0" align="left" textcolor="#FF0000FF" disabledtextcolor="#00606060" />
+			<Control name="autoCap" />
+			<HorizontalLayout name="btnCap" padding="0,10,6,10" width="80">
+				<Button name="minbtn" float="false" width="20" />
+				<Button name="maxbtn" float="false" padding="10,0,0,0" width="20" />
+				<Button name="closebtn" float="false" padding="10,0,0,0" width="20"/>
+			</HorizontalLayout>
+		</HorizontalLayout>
+	
+		<HorizontalLayout>
+			<VerticalLayout width="220" bkcolor="#ffB2DFEE">
+				<Button name="btnHorzLayout" text="水平布局" width="100" height="26" />
+				<Button name="btnVertLayout" text="垂直布局" width="100" height="26" />
+			</VerticalLayout>
+			<HorizontalLayout name="layConHorz">
+				<VerticalLayout bkcolor="#ffBCEE68">
+					<Label text="马云" />
+					<Label text="张勇" />
+				</VerticalLayout>
+				<VerticalLayout bkcolor="#ff8A2BE2">
+					<Label text="风清扬" />
+					<Label text="逍遥子" />
+				</VerticalLayout>
+			</HorizontalLayout>
+			<VerticalLayout name="layConVert" visible="false">
+			</VerticalLayout>
+		</HorizontalLayout>
+	</VerticalLayout>
+</Window>

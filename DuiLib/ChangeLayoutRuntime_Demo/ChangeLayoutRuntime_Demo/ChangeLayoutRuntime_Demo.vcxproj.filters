@@ -13,9 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{0d9ef02e-32ea-419d-a35c-7ace6416e8a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="small.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="ChangeLayoutRuntime_Demo.ico">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -24,49 +33,57 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="rc4.h">
+    <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="TestRc4.h">
+    <ClInclude Include="ChangeLayoutRuntime_Demo.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="UTF8.h">
+    <ClInclude Include="MainWnd.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="StringCodecConverter.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="CefBrowserUI.h">
+      <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="TestUtf8.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="CefClientApp.h">
+      <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="BigLittleEndian.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="CefClientHandler.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="CefHeaders.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="CEFV8HandlerEx.h">
+      <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CodecUtils.cpp">
+    <ClCompile Include="ChangeLayoutRuntime_Demo.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="rc4.cpp">
+    <ClCompile Include="MainWnd.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="TestRc4.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="CefBrowserUI.cpp">
+      <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="UTF8.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="CefClientApp.cc">
+      <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="StringCodecConverter.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="CefClientHandler.cpp">
+      <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="TestUtf8.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="CEFV8HandlerEx.cc">
+      <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="BigLittleEndian.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ChangeLayoutRuntime_Demo.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

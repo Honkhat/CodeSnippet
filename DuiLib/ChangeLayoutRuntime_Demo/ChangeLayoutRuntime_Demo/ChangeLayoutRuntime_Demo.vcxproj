@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{E314972A-CE2D-409F-962A-0008A17FCEF6}</ProjectGuid>
+    <ProjectGuid>{840B47F6-1907-4A85-8352-7BCC09648BA4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>CodecUtils</RootNamespace>
+    <RootNamespace>ChangeLayoutRuntime_Demo</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -25,7 +25,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -39,67 +39,74 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\out\$(Platform)\$(Configuration)\bin\</OutDir>
-    <IntDir>..\out\$(Platform)\$(Configuration)\intermediate\</IntDir>
+    <IncludePath>$(SolutionDir)Source\Librarys\DuiLib;D:\workspace_any\安宁邮信平台\include\cef\include;D:\workspace_any\安宁邮信平台\include\cef;D:\workspace_any\安宁邮信平台\Source\Librarys;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)lib\$(Configuration);$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(Configuration)\$(ProjectName)_$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\out\$(Platform)\$(Configuration)\bin\</OutDir>
-    <IntDir>..\out\$(Platform)\$(Configuration)\intermediate\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>DuiLib.lib;libcef.lib;libcef_dll_wrapper.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="ChangeLayoutRuntime_Demo.ico" />
     <None Include="ReadMe.txt" />
+    <None Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BigLittleEndian.h" />
-    <ClInclude Include="rc4.h" />
+    <ClInclude Include="CefBrowserUI.h" />
+    <ClInclude Include="CefClientApp.h" />
+    <ClInclude Include="CefClientHandler.h" />
+    <ClInclude Include="CefHeaders.h" />
+    <ClInclude Include="CEFV8HandlerEx.h" />
+    <ClInclude Include="ChangeLayoutRuntime_Demo.h" />
+    <ClInclude Include="MainWnd.h" />
+    <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="StringCodecConverter.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TestRc4.h" />
-    <ClInclude Include="TestUtf8.h" />
-    <ClInclude Include="UTF8.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BigLittleEndian.cpp" />
-    <ClCompile Include="CodecUtils.cpp" />
-    <ClCompile Include="rc4.cpp" />
+    <ClCompile Include="CefBrowserUI.cpp" />
+    <ClCompile Include="CefClientApp.cc" />
+    <ClCompile Include="CefClientHandler.cpp" />
+    <ClCompile Include="CEFV8HandlerEx.cc" />
+    <ClCompile Include="ChangeLayoutRuntime_Demo.cpp" />
+    <ClCompile Include="MainWnd.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="StringCodecConverter.cpp" />
-    <ClCompile Include="TestRc4.cpp" />
-    <ClCompile Include="TestUtf8.cpp" />
-    <ClCompile Include="UTF8.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ChangeLayoutRuntime_Demo.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
