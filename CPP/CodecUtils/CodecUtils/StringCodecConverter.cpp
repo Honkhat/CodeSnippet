@@ -67,4 +67,15 @@ void CStringCodecConverter::Utf8ToGb(std::string& sUtf8, std::string& sGb)
 	delete[] szUtf16;
 	delete[] szGb;
 }
+
+void CStringCodecConverter::Utf16ToUtf8(std::string& sUtf16, std::string& sUtf8)
+{
+
+}
+
+void CStringCodecConverter::Utf8ToUtf16(std::string& sUtf8, std::string& sUtf16)
+{
+
+}
+
 }

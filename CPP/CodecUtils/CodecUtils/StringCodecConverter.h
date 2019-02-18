@@ -18,6 +18,10 @@ public:
 	//GB[2312/K/18030-2000/18030-2005] <--> UTF-8;
 	static void GbToUtf8(std::string& sGb, std::string& sUtf8);
 	static void Utf8ToGb(std::string& sUtf8, std::string& sGb);
+
+	//UTF-16S <--> UTF-8;
+	static void Utf16ToUtf8(std::string& sUtf16, std::string& sUtf8);
+	static void Utf8ToUtf16(std::string& sUtf8, std::string& sUtf16);
 };
 }
 
